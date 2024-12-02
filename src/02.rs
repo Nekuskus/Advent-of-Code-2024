@@ -1,7 +1,7 @@
 #![feature(iter_map_windows)]
 
 use setup_utils::*;
-use std::path::Path;
+use std::{iter, path::Path};
 
 // Symbols to replace: 02 2 4 472 520
 
@@ -75,8 +75,8 @@ fn main() {
     println!("{}", part2(&lines1));
 }
 
-fn validate_report(vec: &Vec<i32>) -> bool {
-    let inc = vec.iter().clone().map_windows(|&[x, y]| y - x);
+fn validate_report<T: Iterator<Item = i32> + Clone>(it: &T) -> bool {
+    let inc = it.clone().map_windows(|&[x, y]| y - x);
 
     (inc.clone().all(|x| x > 0) || inc.clone().all(|x| x < 0))
         && inc.clone().all(|x| x.abs() >= 1 && x.abs() <= 3)
@@ -89,8 +89,19 @@ fn part1(lines: &Vec<String>) -> usize {
             line.split_ascii_whitespace()
                 .map(|num| num.parse::<i32>().unwrap())
         })
-        .filter(|parsed| validate_report(&parsed.clone().collect::<Vec<i32>>()))
+        .filter(|parsed| validate_report(parsed))
         .count()
+}
+
+fn validate_report_skip<T: Iterator<Item = i32> + Clone>(it: &T, skip: usize) -> bool {
+    let inc = it
+        .clone()
+        .enumerate()
+        .filter_map(|(idx, num)| (idx != skip).then_some(num))
+        .map_windows(|&[x, y]| y - x);
+
+    (inc.clone().all(|x| x > 0) || inc.clone().all(|x| x < 0))
+        && inc.clone().all(|x| x.abs() >= 1 && x.abs() <= 3)
 }
 
 fn part2(lines: &Vec<String>) -> usize {
@@ -101,17 +112,12 @@ fn part2(lines: &Vec<String>) -> usize {
                 .map(|num| num.parse::<i32>().unwrap())
         })
         .filter(|parsed| {
-            let mut iterations = vec![];
             let base_vec = parsed.clone().collect::<Vec<i32>>();
-            iterations.push(base_vec.clone());
 
-            for idx in 0..base_vec.len() {
-                let mut without = base_vec.clone();
-                without.remove(idx);
-                iterations.push(without);
-            }
-
-            iterations.iter().any(validate_report)
+            iter::repeat(base_vec.iter().copied())
+                .take(base_vec.len())
+                .enumerate()
+                .any(|(idx, it)| validate_report_skip(&it, idx))
         })
         .count()
 }
