@@ -1,6 +1,5 @@
 #![feature(iter_map_windows)]
 
-use debug_print::{debug_print as debug, debug_println as debugln};
 use setup_utils::*;
 use std::path::Path;
 
@@ -24,7 +23,7 @@ mod tests {
             ))
         }
     }
-    
+
     #[test]
     fn part2() -> Result<(), String> {
         let lines = read_lines(Path::new("./inputs/02-example.txt"));
@@ -32,7 +31,10 @@ mod tests {
         if result == 4 {
             Ok(())
         } else {
-            Err(format!("02: Bad result for Part 2 example, expected 4 got {}", result))
+            Err(format!(
+                "02: Bad result for Part 2 example, expected 4 got {}",
+                result
+            ))
         }
     }
 
@@ -42,12 +44,20 @@ mod tests {
         let result1 = crate::part1(&lines);
         let result2 = crate::part2(&lines);
 
-        
         match (result1, result2) {
             (472, 520) => Ok(()),
-            (_, 520) => Err(format!("02: Bad result for Part 1, expected 472 got {}", result1)),
-            (472, _) => Err(format!("02: Bad result for Part 2, expected 520 got {}", result2)),
-            (_, _) => Err(format!("02: Bad result for Part 1 & 2, expected (472, 520) got ({}, {})", result1, result2))
+            (_, 520) => Err(format!(
+                "02: Bad result for Part 1, expected 472 got {}",
+                result1
+            )),
+            (472, _) => Err(format!(
+                "02: Bad result for Part 2, expected 520 got {}",
+                result2
+            )),
+            (_, _) => Err(format!(
+                "02: Bad result for Part 1 & 2, expected (472, 520) got ({}, {})",
+                result1, result2
+            )),
         }
     }
 }
@@ -94,7 +104,7 @@ fn part2(lines: &Vec<String>) -> usize {
             let mut iterations = vec![];
             let base_vec = parsed.clone().collect::<Vec<i32>>();
             iterations.push(base_vec.clone());
-            
+
             for idx in 0..base_vec.len() {
                 let mut without = base_vec.clone();
                 without.remove(idx);

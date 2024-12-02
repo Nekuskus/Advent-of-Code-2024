@@ -1,4 +1,3 @@
-use debug_print::{debug_print as debug, debug_println as debugln};
 use setup_utils::*;
 use std::{collections::HashMap, path::Path};
 
@@ -64,13 +63,14 @@ mod tests {
 fn main() {
     let linesfull = read_lines(Path::new("./inputs/01-full.txt"));
     let lines1 = read_lines(Path::new("./inputs/01-example.txt"));
+
     println!("01-full.txt");
     println!("{}", part1(&linesfull));
     println!("{}\n", part2(&linesfull));
 
     println!("01-example.txt");
     println!("{}", part1(&lines1));
-    println!("{}\n", part2(&lines1));
+    println!("{}", part2(&lines1));
 }
 
 fn part1(lines: &Vec<String>) -> u32 {
