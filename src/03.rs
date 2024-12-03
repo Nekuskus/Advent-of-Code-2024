@@ -109,15 +109,13 @@ fn part2(lines: &Vec<String>) -> i32 {
     let redo = Regex::new(r"\Ado\(\)").unwrap();
     let redont = Regex::new(r"\Adon't\(\)").unwrap();
 
-    lines
-        .iter()
-        .fold(0, |acc, line| {
-            let mut sum = 0;
-            for idx in 0..line.len() {
+    lines.iter().fold(0, |acc, line| {
+        (0..line.len())
+            .map(|idx| {
                 if enabled {
                     match remul.captures(&line[idx..]) {
                         Some(caps) => {
-                            sum += caps.name("first").unwrap().as_str().parse::<i32>().unwrap()
+                            caps.name("first").unwrap().as_str().parse::<i32>().unwrap()
                                 * caps
                                     .name("second")
                                     .unwrap()
@@ -125,16 +123,21 @@ fn part2(lines: &Vec<String>) -> i32 {
                                     .parse::<i32>()
                                     .unwrap()
                         }
-                        None => if redont.is_match(&line[idx..]) {
-                            enabled = false;
-                        },
+                        None => {
+                            if redont.is_match(&line[idx..]) {
+                                enabled = false;
+                            }
+                            0
+                        }
                     }
                 } else {
                     if redo.is_match(&line[idx..]) {
                         enabled = true;
                     }
+                    0
                 }
-            }
-            acc + sum
-        })
+            })
+            .sum::<i32>()
+            + acc
+    })
 }
