@@ -105,16 +105,25 @@ fn part2(lines: &Vec<String>) -> i32 {
     // look-behinds not supported by crate
 
     let mut enabled = true;
-    let remul = Regex::new(r"\Amul\((?<first>\d{1,3}),(?<second>\d{1,3})\)").unwrap();
-    let redo = Regex::new(r"\Ado\(\)").unwrap();
-    let redont = Regex::new(r"\Adon't\(\)").unwrap();
+    let remul =
+        Regex::new(r"do\(\)|don't\(\)|mul\((?<first>\d{1,3}),(?<second>\d{1,3})\)").unwrap();
 
-    lines.iter().fold(0, |acc, line| {
-        (0..line.len())
-            .map(|idx| {
-                if enabled {
-                    match remul.captures(&line[idx..]) {
-                        Some(caps) => {
+    lines
+        .iter()
+        .map(|line| {
+            remul
+                .captures_iter(&line)
+                .map(|caps| match caps[0].to_string().as_str() {
+                    "do()" => {
+                        enabled = true;
+                        0
+                    }
+                    "don't()" => {
+                        enabled = false;
+                        0
+                    }
+                    _ => {
+                        if enabled {
                             caps.name("first").unwrap().as_str().parse::<i32>().unwrap()
                                 * caps
                                     .name("second")
@@ -122,22 +131,12 @@ fn part2(lines: &Vec<String>) -> i32 {
                                     .as_str()
                                     .parse::<i32>()
                                     .unwrap()
-                        }
-                        None => {
-                            if redont.is_match(&line[idx..]) {
-                                enabled = false;
-                            }
+                        } else {
                             0
                         }
                     }
-                } else {
-                    if redo.is_match(&line[idx..]) {
-                        enabled = true;
-                    }
-                    0
-                }
-            })
-            .sum::<i32>()
-            + acc
-    })
+                })
+                .sum::<i32>()
+        })
+        .sum()
 }
