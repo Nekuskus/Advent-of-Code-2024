@@ -45,9 +45,18 @@ mod tests {
 
         match (result1, result2) {
             (185797128, 89798695) => Ok(()),
-            (_, 89798695) => Err(format!("03: Bad result for Part 1, expected 185797128 got {}", result1)),
-            (185797128, _) => Err(format!("03: Bad result for Part 2, expected 89798695 got {}", result2)),
-            (_, _) => Err(format!("03: Bad result for Part 1 & 2, expected (185797128, 89798695) got ({}, {})", result1, result2))
+            (_, 89798695) => Err(format!(
+                "03: Bad result for Part 1, expected 185797128 got {}",
+                result1
+            )),
+            (185797128, _) => Err(format!(
+                "03: Bad result for Part 2, expected 89798695 got {}",
+                result2
+            )),
+            (_, _) => Err(format!(
+                "03: Bad result for Part 1 & 2, expected (185797128, 89798695) got ({}, {})",
+                result1, result2
+            )),
         }
     }
 }
@@ -103,7 +112,7 @@ fn part2(lines: &Vec<String>) -> i32 {
         .map(|line| {
             remul
                 .captures_iter(&line)
-                .map(|caps| match caps[0].to_string().as_str() {
+                .map(|caps| match &caps[0] {
                     "do()" => {
                         enabled = true;
                         0
