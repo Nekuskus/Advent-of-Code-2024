@@ -1,9 +1,8 @@
-use debug_print::{debug_print as debug, debug_println as debugln};
 use regex::Regex;
 use setup_utils::*;
 use std::path::Path;
 
-// Symbols to replace: 03 161 48 185797128 SOLVE2
+// Symbols to replace: 03 161 48 185797128 89798695
 
 #[cfg(test)]
 mod tests {
@@ -42,23 +41,14 @@ mod tests {
     fn full() -> Result<(), String> {
         let lines = read_lines(Path::new("./inputs/03-full.txt"));
         let result1 = crate::part1(&lines);
-        //let result2 = crate::part2(&lines);
+        let result2 = crate::part2(&lines);
 
-        if result1 == 185797128 {
-            Ok(())
-        } else {
-            Err(format!(
-                "03: Bad result for Part 1, expected 185797128 got {}",
-                result1
-            ))
-        }
-        /*
         match (result1, result2) {
-            (185797128, SOLVE2) => Ok(()),
-            (_, SOLVE2) => Err(format!("03: Bad result for Part 1, expected 185797128 got {}", result1)),
-            (185797128, _) => Err(format!("03: Bad result for Part 2, expected SOLVE2 got {}", result2)),
-            (_, _) => Err(format!("03: Bad result for Part 1 & 2, expected (185797128, SOLVE2) got ({}, {})", result1, result2))
-        }*/
+            (185797128, 89798695) => Ok(()),
+            (_, 89798695) => Err(format!("03: Bad result for Part 1, expected 185797128 got {}", result1)),
+            (185797128, _) => Err(format!("03: Bad result for Part 2, expected 89798695 got {}", result2)),
+            (_, _) => Err(format!("03: Bad result for Part 1 & 2, expected (185797128, 89798695) got ({}, {})", result1, result2))
+        }
     }
 }
 
