@@ -2,7 +2,7 @@ use debug_print::{debug_print as debug, debug_println as debugln};
 use setup_utils::*;
 use std::path::Path;
 
-// Symbols to replace: 04 18 TEST2 SOLVE1 SOLVE2
+// Symbols to replace: 04 18 9 2521 1912
 
 #[cfg(test)]
 mod tests {
@@ -11,7 +11,7 @@ mod tests {
 
     #[test]
     fn part1() -> Result<(), String> {
-        let lines = read_lines(Path::new("./inputs/04-1-example.txt"));
+        let lines = read_lines(Path::new("./inputs/04-example.txt"));
         let result = crate::part1(&lines);
         if result == 18 {
             Ok(())
@@ -22,15 +22,15 @@ mod tests {
             ))
         }
     }
-    /*
+    
     #[test]
     fn part2() -> Result<(), String> {
-        let lines = read_lines(Path::new("./inputs/04-2-example.txt"));
+        let lines = read_lines(Path::new("./inputs/04-example.txt"));
         let result = crate::part2(&lines);
-        if result == TEST2 {
+        if result == 9 {
             Ok(())
         } else {
-            Err(format!("04: Bad result for Part 2 example, expected TEST2 got {}", result))
+            Err(format!("04: Bad result for Part 2 example, expected 9 got {}", result))
         }
     }
 
@@ -38,40 +38,29 @@ mod tests {
     fn full() -> Result<(), String> {
         let lines = read_lines(Path::new("./inputs/04-full.txt"));
         let result1 = crate::part1(&lines);
-        //let result2 = crate::part2(&lines);
+        let result2 = crate::part2(&lines);
 
-        if result1 == SOLVE1 {
-            Ok(())
-        } else {
-            Err(format!("04: Bad result for Part 1, expected SOLVE1 got {}", result1))
-        }
-        /*
         match (result1, result2) {
-            (SOLVE1, SOLVE2) => Ok(()),
-            (_, SOLVE2) => Err(format!("04: Bad result for Part 1, expected SOLVE1 got {}", result1)),
-            (SOLVE1, _) => Err(format!("04: Bad result for Part 2, expected SOLVE2 got {}", result2)),
-            (_, _) => Err(format!("04: Bad result for Part 1 & 2, expected (SOLVE1, SOLVE2) got ({}, {})", result1, result2))
-        }*/
+            (2521, 1912) => Ok(()),
+            (_, 1912) => Err(format!("04: Bad result for Part 1, expected 2521 got {}", result1)),
+            (2521, _) => Err(format!("04: Bad result for Part 2, expected 1912 got {}", result2)),
+            (_, _) => Err(format!("04: Bad result for Part 1 & 2, expected (2521, 1912) got ({}, {})", result1, result2))
+        }
     }
-    */
+    
 }
 
 fn main() {
     let linesfull = read_lines(Path::new("./inputs/04-full.txt"));
-    let lines1 = read_lines(Path::new("./inputs/04-1-example.txt"));
-    //let lines2 = read_lines(Path::new("./inputs/04-2-example.txt"));
+    let lines1 = read_lines(Path::new("./inputs/04-example.txt"));
 
     println!("04-full.txt");
     println!("{}", part1(&linesfull));
-    //println!("{}\n", part2(&linesfull));
+    println!("{}\n", part2(&linesfull));
 
     println!("04-1-example.txt");
     println!("{}", part1(&lines1));
-    //println!("{}\n", part2(&lines1));
-
-    //println!("04-2-example.txt");
-    //println!("{}", part1(&lines2));
-    //println!("{}", part2(&lines2));
+    println!("{}", part2(&lines1));
 }
 
 fn gen_iter(
@@ -113,7 +102,7 @@ fn gen_iter(
             }
         }
     }
-    println!("{x},{y}: {iters:?}");
+    
     iters
 }
 
@@ -144,8 +133,30 @@ fn part1(lines: &Vec<String>) -> usize {
     count
 }
 
-/*
-fn part2(lines: &Vec<String>) -> i32 {
 
+fn part2(lines: &Vec<String>) -> usize {
+    let matrix: Vec<_> = lines
+        .iter()
+        .map(|s| s.chars().collect::<Vec<char>>())
+        .collect();
+    let needle1 = "MAS";
+    let needle2 = "SAM";
+
+    let mut count = 0;
+
+    for (y, line) in matrix.iter().enumerate() {
+        for (x, &c) in line.iter().enumerate() {
+            if c == 'A' {
+                if x > 0 && x < line.len() - 1 && y > 0 && y < matrix.len() - 1 {
+                    let strings: [String; 2] = [[matrix[y - 1][x - 1], 'A', matrix[y + 1][x + 1]].iter().collect(), [matrix[y - 1][x + 1], 'A', matrix[y + 1][x - 1]].iter().collect()];
+
+                    if strings.iter().all(|s| s == needle1 || s == needle2) {
+                        count += 1;
+                    }
+                }
+            }
+        }
+    }
+
+    count
 }
-*/

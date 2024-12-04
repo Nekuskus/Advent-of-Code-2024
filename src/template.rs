@@ -74,7 +74,9 @@ fn main() {
     //println!("{}", part2(&lines2));
 }
 
-fn part1(lines: &Vec<String>) -> i32 {}
+fn part1(lines: &Vec<String>) -> i32 {
+    
+}
 /*
 fn part2(lines: &Vec<String>) -> i32 {
 
