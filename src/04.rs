@@ -21,7 +21,7 @@ mod tests {
             ))
         }
     }
-    
+
     #[test]
     fn part2() -> Result<(), String> {
         let lines = read_lines(Path::new("./inputs/04-example.txt"));
@@ -29,7 +29,10 @@ mod tests {
         if result == 9 {
             Ok(())
         } else {
-            Err(format!("04: Bad result for Part 2 example, expected 9 got {}", result))
+            Err(format!(
+                "04: Bad result for Part 2 example, expected 9 got {}",
+                result
+            ))
         }
     }
 
@@ -41,12 +44,20 @@ mod tests {
 
         match (result1, result2) {
             (2521, 1912) => Ok(()),
-            (_, 1912) => Err(format!("04: Bad result for Part 1, expected 2521 got {}", result1)),
-            (2521, _) => Err(format!("04: Bad result for Part 2, expected 1912 got {}", result2)),
-            (_, _) => Err(format!("04: Bad result for Part 1 & 2, expected (2521, 1912) got ({}, {})", result1, result2))
+            (_, 1912) => Err(format!(
+                "04: Bad result for Part 1, expected 2521 got {}",
+                result1
+            )),
+            (2521, _) => Err(format!(
+                "04: Bad result for Part 2, expected 1912 got {}",
+                result2
+            )),
+            (_, _) => Err(format!(
+                "04: Bad result for Part 1 & 2, expected (2521, 1912) got ({}, {})",
+                result1, result2
+            )),
         }
     }
-    
 }
 
 fn main() {
@@ -101,7 +112,7 @@ fn gen_iter(
             }
         }
     }
-    
+
     iters
 }
 
@@ -132,7 +143,6 @@ fn part1(lines: &Vec<String>) -> usize {
     count
 }
 
-
 fn part2(lines: &Vec<String>) -> usize {
     let matrix: Vec<_> = lines
         .iter()
@@ -147,7 +157,14 @@ fn part2(lines: &Vec<String>) -> usize {
         for (x, &c) in line.iter().enumerate() {
             if c == 'A' {
                 if x > 0 && x < line.len() - 1 && y > 0 && y < matrix.len() - 1 {
-                    let strings: [String; 2] = [[matrix[y - 1][x - 1], 'A', matrix[y + 1][x + 1]].iter().collect(), [matrix[y - 1][x + 1], 'A', matrix[y + 1][x - 1]].iter().collect()];
+                    let strings: [String; 2] = [
+                        [matrix[y - 1][x - 1], 'A', matrix[y + 1][x + 1]]
+                            .iter()
+                            .collect(),
+                        [matrix[y - 1][x + 1], 'A', matrix[y + 1][x - 1]]
+                            .iter()
+                            .collect(),
+                    ];
 
                     if strings.iter().all(|s| s == needle1 || s == needle2) {
                         count += 1;

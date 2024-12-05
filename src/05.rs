@@ -107,13 +107,7 @@ fn part1(lines: &Vec<String>) -> u32 {
                     Some(reqs) => reqs
                         .iter()
                         .all(|req| match line.iter().position(|x| x == req) {
-                            Some(idx_req) => {
-                                if idx_req > idx_num {
-                                    true
-                                } else {
-                                    false
-                                }
-                            }
+                            Some(idx_req) => idx_req > idx_num,
                             None => true,
                         }),
                     None => true,
@@ -160,13 +154,7 @@ fn part2(lines: &Vec<String>) -> u32 {
                     Some(reqs) => reqs
                         .iter()
                         .all(|req| match line.iter().position(|x| x == req) {
-                            Some(idx_req) => {
-                                if idx_req > idx_num {
-                                    true
-                                } else {
-                                    false
-                                }
-                            }
+                            Some(idx_req) => idx_req > idx_num,
                             None => true,
                         }),
                     None => true,

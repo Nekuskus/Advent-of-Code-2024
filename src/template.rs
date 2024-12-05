@@ -30,7 +30,10 @@ mod tests {
         if result == TEST2 {
             Ok(())
         } else {
-            Err(format!("FILENUM: Bad result for Part 2 example, expected TEST2 got {}", result))
+            Err(format!(
+                "FILENUM: Bad result for Part 2 example, expected TEST2 got {}",
+                result
+            ))
         }
     }
 
@@ -48,9 +51,18 @@ mod tests {
         /*
         match (result1, result2) {
             (SOLVE1, SOLVE2) => Ok(()),
-            (_, SOLVE2) => Err(format!("FILENUM: Bad result for Part 1, expected SOLVE1 got {}", result1)),
-            (SOLVE1, _) => Err(format!("FILENUM: Bad result for Part 2, expected SOLVE2 got {}", result2)),
-            (_, _) => Err(format!("FILENUM: Bad result for Part 1 & 2, expected (SOLVE1, SOLVE2) got ({}, {})", result1, result2))
+            (_, SOLVE2) => Err(format!(
+                "FILENUM: Bad result for Part 1, expected SOLVE1 got {}",
+                result1
+            )),
+            (SOLVE1, _) => Err(format!(
+                "FILENUM: Bad result for Part 2, expected SOLVE2 got {}",
+                result2
+            )),
+            (_, _) => Err(format!(
+                "FILENUM: Bad result for Part 1 & 2, expected (SOLVE1, SOLVE2) got ({}, {})",
+                result1, result2
+            )),
         }*/
     }
     */
@@ -74,9 +86,7 @@ fn main() {
     //println!("{}", part2(&lines2));
 }
 
-fn part1(lines: &Vec<String>) -> i32 {
-    
-}
+fn part1(lines: &Vec<String>) -> i32 {}
 /*
 fn part2(lines: &Vec<String>) -> i32 {
 
