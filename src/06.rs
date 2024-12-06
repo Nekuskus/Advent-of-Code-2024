@@ -184,8 +184,10 @@ fn part2(lines: &Vec<String>) -> usize {
         .iter()
         .map(|s| s.chars().collect())
         .collect::<Vec<Vec<char>>>();
+
     let mut startx = None;
     let mut starty = None;
+
     'search: for (y, line) in matrix.iter().enumerate() {
         for (x, c) in line.iter().enumerate() {
             if *c == '^' {
@@ -208,14 +210,36 @@ fn part2(lines: &Vec<String>) -> usize {
 
     matrix[p.y][p.x] = 'X';
 
-    iter::repeat_n(&matrix, matrix.len() * matrix[0].len())
-        .enumerate()
-        .filter(|(idx, matrix)| {
-            let ignore = Point {
-                x: idx % matrix[0].len(),
-                y: idx / matrix.len(),
-            };
+    let mut check_matrix = matrix.clone();
+    let (mut loop_p, mut loop_d) = (p.clone(), d.clone());
+    // first pass to find viable points
+    while let Some((newp, newd)) = matrix_step(&check_matrix, &loop_p, loop_d, None) {
+        loop_p = newp;
+        loop_d = newd;
+        check_matrix[loop_p.y][loop_p.x] = 'X';
+    }
 
+    let visited = check_matrix
+        .iter()
+        .enumerate()
+        .map(|(y, line)| {
+            line.iter()
+                .enumerate()
+                .filter_map(|(x, &c)| {
+                    if c == 'X' {
+                        Some(Point::new(x, y))
+                    } else {
+                        None
+                    }
+                })
+                .collect::<Vec<Point>>()
+        })
+        .flatten()
+        .collect::<HashSet<Point>>();
+
+    iter::repeat_n(&matrix, visited.len())
+        .zip(visited.iter())
+        .filter(|(matrix, &ignore)| {
             if matrix[ignore.y][ignore.x] == 'X' {
                 // don't replace starting position
                 return false;
