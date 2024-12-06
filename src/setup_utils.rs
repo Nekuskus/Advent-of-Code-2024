@@ -37,7 +37,7 @@ impl Direction {
     }
 }
 
-#[derive(Debug, Clone, Copy, Hash, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, Hash, Eq)]
 pub struct Point {
     pub x: usize,
     pub y: usize,
@@ -46,5 +46,17 @@ pub struct Point {
 impl Point {
     pub fn new(x: usize, y: usize) -> Self {
         Point { x: x, y: y }
+    }
+}
+
+impl PartialEq for Point {
+    fn eq(&self, other: &Self) -> bool {
+        self.x == other.x && self.y == other.y
+    }
+}
+
+impl PartialEq<(usize, usize)> for Point {
+    fn eq(&self, other: &(usize, usize)) -> bool {
+        self.x == other.0 && self.y == other.1
     }
 }

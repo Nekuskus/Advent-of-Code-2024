@@ -86,7 +86,7 @@ fn matrix_step(
         Direction::North => {
             if p.y > 0 {
                 if matrix[p.y - 1][p.x] != '#'
-                    && (ignore.is_none() || Point::new(p.x, p.y - 1) != ignore.unwrap())
+                    && (ignore.is_none() || ignore.unwrap() != (p.x, p.y - 1))
                 {
                     Some((Point { x: p.x, y: p.y - 1 }, Direction::North))
                 } else {
@@ -99,7 +99,7 @@ fn matrix_step(
         Direction::East => {
             if p.x < xlen - 1 {
                 if matrix[p.y][p.x + 1] != '#'
-                    && (ignore.is_none() || Point::new(p.x + 1, p.y) != ignore.unwrap())
+                    && (ignore.is_none() || ignore.unwrap() != (p.x + 1, p.y))
                 {
                     Some((Point::new(p.x + 1, p.y), Direction::East))
                 } else {
@@ -112,7 +112,7 @@ fn matrix_step(
         Direction::South => {
             if p.y < ylen - 1 {
                 if matrix[p.y + 1][p.x] != '#'
-                    && (ignore.is_none() || Point::new(p.x, p.y + 1) != ignore.unwrap())
+                    && (ignore.is_none() || ignore.unwrap() != (p.x, p.y + 1))
                 {
                     Some((Point::new(p.x, p.y + 1), Direction::South))
                 } else {
@@ -125,7 +125,7 @@ fn matrix_step(
         Direction::West => {
             if p.x > 0 {
                 if matrix[p.y][p.x - 1] != '#'
-                    && (ignore.is_none() || Point::new(p.x - 1, p.y) != ignore.unwrap())
+                    && (ignore.is_none() || ignore.unwrap() != (p.x - 1, p.y))
                 {
                     Some((Point::new(p.x - 1, p.y), Direction::West))
                 } else {
