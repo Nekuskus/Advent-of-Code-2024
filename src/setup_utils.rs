@@ -1,5 +1,4 @@
 use std::fs::read_to_string;
-use std::ops::Deref;
 use std::path::Path;
 
 pub fn read_lines(filename: &Path) -> Vec<String> {
