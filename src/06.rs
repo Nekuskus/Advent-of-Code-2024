@@ -1,8 +1,7 @@
 #![feature(iter_repeat_n)]
 
-use debug_print::{debug_print as debug, debug_println as debugln};
 use setup_utils::*;
-use std::{borrow::BorrowMut, collections::HashSet, iter, path::Path};
+use std::{collections::HashSet, iter, path::Path};
 
 // Symbols to replace: 06 41 6 4977 SOLVE2
 
@@ -85,17 +84,24 @@ fn main() {
     println!("{}", part2(&lines1));
 }
 
-fn matrix_step(matrix: &Vec<Vec<char>>, p: &Point, d: Direction) -> Option<(Point, Direction)> {
+fn matrix_step(
+    matrix: &Vec<Vec<char>>,
+    p: &Point,
+    d: Direction,
+    ignore: Option<Point>,
+) -> Option<(Point, Direction)> {
     let xlen = matrix[0].len();
     let ylen = matrix.len();
 
     match d {
         Direction::North => {
             if p.y > 0 {
-                if matrix[p.y - 1][p.x] != '#' {
+                if matrix[p.y - 1][p.x] != '#'
+                    && (ignore.is_none() || Point::new(p.x, p.y - 1) != ignore.unwrap())
+                {
                     Some((Point { x: p.x, y: p.y - 1 }, Direction::North))
                 } else {
-                    matrix_step(matrix, p, Direction::East)
+                    matrix_step(matrix, p, Direction::East, ignore)
                 }
             } else {
                 None
@@ -103,10 +109,12 @@ fn matrix_step(matrix: &Vec<Vec<char>>, p: &Point, d: Direction) -> Option<(Poin
         }
         Direction::East => {
             if p.x < xlen - 1 {
-                if matrix[p.y][p.x + 1] != '#' {
-                    Some((Point { x: p.x + 1, y: p.y }, Direction::East))
+                if matrix[p.y][p.x + 1] != '#'
+                    && (ignore.is_none() || Point::new(p.x + 1, p.y) != ignore.unwrap())
+                {
+                    Some((Point::new(p.x + 1, p.y), Direction::East))
                 } else {
-                    matrix_step(matrix, p, Direction::South)
+                    matrix_step(matrix, p, Direction::South, ignore)
                 }
             } else {
                 None
@@ -114,10 +122,12 @@ fn matrix_step(matrix: &Vec<Vec<char>>, p: &Point, d: Direction) -> Option<(Poin
         }
         Direction::South => {
             if p.y < ylen - 1 {
-                if matrix[p.y + 1][p.x] != '#' {
-                    Some((Point { x: p.x, y: p.y + 1 }, Direction::South))
+                if matrix[p.y + 1][p.x] != '#'
+                    && (ignore.is_none() || Point::new(p.x, p.y + 1) != ignore.unwrap())
+                {
+                    Some((Point::new(p.x, p.y + 1), Direction::South))
                 } else {
-                    matrix_step(matrix, p, Direction::West)
+                    matrix_step(matrix, p, Direction::West, ignore)
                 }
             } else {
                 None
@@ -125,10 +135,12 @@ fn matrix_step(matrix: &Vec<Vec<char>>, p: &Point, d: Direction) -> Option<(Poin
         }
         Direction::West => {
             if p.x > 0 {
-                if matrix[p.y][p.x - 1] != '#' {
-                    Some((Point { x: p.x - 1, y: p.y }, Direction::West))
+                if matrix[p.y][p.x - 1] != '#'
+                    && (ignore.is_none() || Point::new(p.x - 1, p.y) != ignore.unwrap())
+                {
+                    Some((Point::new(p.x - 1, p.y), Direction::West))
                 } else {
-                    matrix_step(matrix, p, Direction::North)
+                    matrix_step(matrix, p, Direction::North, ignore)
                 }
             } else {
                 None
@@ -166,14 +178,10 @@ fn part1(lines: &Vec<String>) -> usize {
 
     matrix[p.y][p.x] = 'X';
 
-    while let Some((newp, newd)) = matrix_step(&matrix, &p, d) {
+    while let Some((newp, newd)) = matrix_step(&matrix, &p, d, None) {
         p = newp;
         d = newd;
         matrix[p.y][p.x] = 'X';
-    }
-
-    for line in matrix.clone() {
-        debugln!("{line:?}");
     }
 
     matrix
@@ -213,25 +221,26 @@ fn part2(lines: &Vec<String>) -> usize {
 
     iter::repeat_n(&matrix, matrix.len() * matrix[0].len())
         .enumerate()
-        .filter(|(idx, matrix_ref)| {
-            let mut matrix = (*matrix_ref).clone();
-            let (x, y) = (idx % matrix[0].len(), idx / matrix.len());
-            if matrix[y][x] == 'X' {
+        .filter(|(idx, matrix)| {
+            let ignore = Point {
+                x: idx % matrix[0].len(),
+                y: idx / matrix.len(),
+            };
+
+            if matrix[ignore.y][ignore.x] == 'X' {
                 // don't replace starting position
                 return false;
             }
-
-            matrix[y][x] = '#';
 
             let (mut p, mut d) = (p.clone(), d.clone());
 
             let mut history = HashSet::new();
             history.insert((p, d));
 
-            while let Some((newp, newd)) = matrix_step(&matrix, &p, d) {
+            while let Some((newp, newd)) = matrix_step(&matrix, &p, d, Some(ignore)) {
                 p = newp;
                 d = newd;
-                matrix[p.y][p.x] = 'X';
+
                 if history.contains(&(p, d)) {
                     // loop found
                     return true;

@@ -1,4 +1,5 @@
 use std::fs::read_to_string;
+use std::ops::Deref;
 use std::path::Path;
 
 pub fn read_lines(filename: &Path) -> Vec<String> {
@@ -41,4 +42,10 @@ impl Direction {
 pub struct Point {
     pub x: usize,
     pub y: usize,
+}
+
+impl Point {
+    pub fn new(x: usize, y: usize) -> Self {
+        Point { x: x, y: y }
+    }
 }
