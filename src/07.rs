@@ -114,12 +114,9 @@ fn rprocess_ops(ops: Vec<&Ops>, operands: &Vec<i64>, target: i64) -> Option<()> 
             Ops::Add => Some(ret - rhs),
             Ops::Multiply => (ret % rhs == 0).then_some(ret / rhs),
             Ops::Concat => {
-                let acc = (ret - rhs) / 10i64.pow(rhs.ilog10() + 1);
-                if (acc * 10i64.pow(rhs.ilog10() + 1) + rhs) == ret {
-                    Some(acc)
-                } else {
-                    None
-                }
+                let log = 10i64.pow(rhs.ilog10() + 1);
+
+                (ret % log == rhs).then_some((ret - rhs) / log)
             }
         })
         .and_then(|res| (res == operands[0]).then_some(()))
