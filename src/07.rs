@@ -85,10 +85,10 @@ fn process_ops(ops: Vec<&Ops>, operands: &Vec<i64>) -> i64 {
     operands[1..]
         .iter()
         .enumerate()
-        .fold(operands[0], |acc, (idx, &num)| match ops[idx] {
-            Ops::Add => acc + num,
-            Ops::Multiply => acc * num,
-            Ops::Concat => acc * 10i64.pow(num.ilog10() + 1) + num,
+        .fold(operands[0], |acc, (idx, &rhs)| match ops[idx] {
+            Ops::Add => acc + rhs,
+            Ops::Multiply => acc * rhs,
+            Ops::Concat => acc * 10i64.pow(rhs.ilog10() + 1) + rhs,
         })
 }
 
@@ -108,14 +108,10 @@ fn part1(lines: &Vec<String>) -> i64 {
                 .map(|s| s.parse::<i64>().unwrap())
                 .collect_vec();
 
-            if itertools::repeat_n(operations.iter(), operands.len() - 1) // permutation with replacements
+            itertools::repeat_n(operations.iter(), operands.len() - 1) // permutation with replacements
                 .multi_cartesian_product()
                 .any(|ops| process_ops(ops, &operands) == lhs)
-            {
-                Some(lhs)
-            } else {
-                None
-            }
+                .then_some(lhs)
         })
         .sum()
 }
@@ -136,14 +132,10 @@ fn part2(lines: &Vec<String>) -> i64 {
                 .map(|s| s.parse::<i64>().unwrap())
                 .collect_vec();
 
-            if itertools::repeat_n(operations.iter(), operands.len() - 1) // permutation with replacements
+            itertools::repeat_n(operations.iter(), operands.len() - 1) // permutation with replacements
                 .multi_cartesian_product()
                 .any(|ops| process_ops(ops, &operands) == lhs)
-            {
-                Some(lhs)
-            } else {
-                None
-            }
+                .then_some(lhs)
         })
         .sum()
 }
