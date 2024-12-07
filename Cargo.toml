@@ -7,6 +7,7 @@ edition = "2021"
 
 [dependencies]
 debug_print = "1.0.0"
+itertools = "0.13.0"
 regex = "1.11.1"
 
 [lib]
@@ -36,3 +37,7 @@ path = "src/05.rs"
 [[bin]]
 name = "06"
 path = "src/06.rs"
+
+[[bin]]
+name = "07"
+path = "src/07.rs"
