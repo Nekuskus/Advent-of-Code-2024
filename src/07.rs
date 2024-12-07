@@ -1,6 +1,6 @@
 use itertools::Itertools;
 use setup_utils::*;
-use std::path::Path;
+use std::{fmt::Display, path::Path};
 
 // Symbols to replace: 07 3749 11387 1399219271639 275791737999003
 
@@ -81,7 +81,21 @@ enum Ops {
     Concat,
 }
 
+impl Display for Ops {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(match self {
+            Self::Add => "+",
+            Self::Multiply => "*",
+            Ops::Concat => "||",
+        })
+    }
+}
+
+#[allow(unused)]
 fn process_ops(ops: Vec<&Ops>, operands: &Vec<i64>) -> i64 {
+    // Slow, more straightforward implementation
+    // Use by checking with target
+
     operands[1..]
         .iter()
         .enumerate()
@@ -90,6 +104,25 @@ fn process_ops(ops: Vec<&Ops>, operands: &Vec<i64>) -> i64 {
             Ops::Multiply => acc * rhs,
             Ops::Concat => acc * 10i64.pow(rhs.ilog10() + 1) + rhs,
         })
+}
+
+fn rprocess_ops(ops: Vec<&Ops>, operands: &Vec<i64>, target: i64) -> Option<()> {
+    operands[1..]
+        .iter()
+        .enumerate()
+        .try_rfold(target, |ret, (idx, &rhs)| match ops[ops.len() - idx - 1] {
+            Ops::Add => Some(ret - rhs),
+            Ops::Multiply => (ret % rhs == 0).then_some(ret / rhs),
+            Ops::Concat => {
+                let acc = (ret - rhs) / 10i64.pow(rhs.ilog10() + 1);
+                if (acc * 10i64.pow(rhs.ilog10() + 1) + rhs) == ret {
+                    Some(acc)
+                } else {
+                    None
+                }
+            }
+        })
+        .and_then(|res| (res == operands[0]).then_some(()))
 }
 
 fn part1(lines: &Vec<String>) -> i64 {
@@ -110,7 +143,7 @@ fn part1(lines: &Vec<String>) -> i64 {
 
             itertools::repeat_n(operations.iter(), operands.len() - 1) // permutation with replacements
                 .multi_cartesian_product()
-                .any(|ops| process_ops(ops, &operands) == lhs)
+                .any(|ops| rprocess_ops(ops, &operands, lhs).is_some())
                 .then_some(lhs)
         })
         .sum()
@@ -134,7 +167,7 @@ fn part2(lines: &Vec<String>) -> i64 {
 
             itertools::repeat_n(operations.iter(), operands.len() - 1) // permutation with replacements
                 .multi_cartesian_product()
-                .any(|ops| process_ops(ops, &operands) == lhs)
+                .any(|ops| rprocess_ops(ops, &operands, lhs).is_some())
                 .then_some(lhs)
         })
         .sum()
