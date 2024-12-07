@@ -88,11 +88,7 @@ fn process_ops(ops: Vec<&Ops>, operands: &Vec<i64>) -> i64 {
         .fold(operands[0], |acc, (idx, &num)| match ops[idx] {
             Ops::Add => acc + num,
             Ops::Multiply => acc * num,
-            Ops::Concat => {
-                let mut lhs = acc.to_string();
-                lhs.push_str(num.to_string().as_str());
-                lhs.parse::<i64>().unwrap()
-            }
+            Ops::Concat => acc * 10i64.pow(num.ilog10() + 1) + num,
         })
 }
 
