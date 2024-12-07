@@ -1,6 +1,6 @@
 use itertools::Itertools;
 use setup_utils::*;
-use std::{fmt::Display, path::Path};
+use std::{fmt::Display, path::Path, time::Instant};
 
 // Symbols to replace: 07 3749 11387 1399219271639 275791737999003
 
@@ -69,7 +69,7 @@ fn main() {
     println!("{}", part1(&linesfull));
     println!("{}\n", part2(&linesfull));
 
-    println!("07-1-example.txt");
+    println!("07-example.txt");
     println!("{}", part1(&lines1));
     println!("{}", part2(&lines1));
 }
@@ -124,10 +124,9 @@ fn rprocess_ops(ops: Vec<&Ops>, operands: &Vec<i64>, target: i64) -> Option<()> 
 
 fn part1(lines: &Vec<String>) -> i64 {
     let operations = [Ops::Add, Ops::Multiply];
-
-    lines
+    let parsed = lines
         .iter()
-        .filter_map(|l| {
+        .map(|l| {
             let mut spl = l.split(":");
             let lhs = spl.next().unwrap().parse::<i64>().unwrap();
             let operands = spl
@@ -137,10 +136,16 @@ fn part1(lines: &Vec<String>) -> i64 {
                 .split_ascii_whitespace()
                 .map(|s| s.parse::<i64>().unwrap())
                 .collect_vec();
+            (lhs, operands)
+        })
+        .collect_vec();
 
+    parsed
+        .iter()
+        .filter_map(|(lhs, operands)| {
             itertools::repeat_n(operations.iter(), operands.len() - 1) // permutation with replacements
                 .multi_cartesian_product()
-                .any(|ops| rprocess_ops(ops, &operands, lhs).is_some())
+                .any(|ops| rprocess_ops(ops, &operands, *lhs).is_some())
                 .then_some(lhs)
         })
         .sum()
@@ -148,10 +153,9 @@ fn part1(lines: &Vec<String>) -> i64 {
 
 fn part2(lines: &Vec<String>) -> i64 {
     let operations = [Ops::Add, Ops::Multiply, Ops::Concat];
-
-    lines
+    let parsed = lines
         .iter()
-        .filter_map(|l| {
+        .map(|l| {
             let mut spl = l.split(":");
             let lhs = spl.next().unwrap().parse::<i64>().unwrap();
             let operands = spl
@@ -161,10 +165,16 @@ fn part2(lines: &Vec<String>) -> i64 {
                 .split_ascii_whitespace()
                 .map(|s| s.parse::<i64>().unwrap())
                 .collect_vec();
+            (lhs, operands)
+        })
+        .collect_vec();
 
+    parsed
+        .iter()
+        .filter_map(|(lhs, operands)| {
             itertools::repeat_n(operations.iter(), operands.len() - 1) // permutation with replacements
                 .multi_cartesian_product()
-                .any(|ops| rprocess_ops(ops, &operands, lhs).is_some())
+                .any(|ops| rprocess_ops(ops, &operands, *lhs).is_some())
                 .then_some(lhs)
         })
         .sum()
