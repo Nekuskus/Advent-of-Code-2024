@@ -86,7 +86,7 @@ impl Display for Ops {
         f.write_str(match self {
             Self::Add => "+",
             Self::Multiply => "*",
-            Ops::Concat => "||",
+            Self::Concat => "||",
         })
     }
 }
@@ -114,9 +114,13 @@ fn rprocess_ops(ops: Vec<&Ops>, operands: &Vec<i64>, target: i64) -> Option<()> 
             Ops::Add => Some(ret - rhs),
             Ops::Multiply => (ret % rhs == 0).then_some(ret / rhs),
             Ops::Concat => {
-                let log = 10i64.pow(rhs.ilog10() + 1);
+                // concat:          ret = acc * 10i64.pow(rhs.ilog10() + 1) + rhs
+                // remove suffix:   acc = (ret - rhs) / 10i64.pow(rhs.ilog10() + 1)
 
-                (ret % log == rhs).then_some((ret - rhs) / log)
+                // (_ - rhs) omitted due to integer rounding
+
+                let log = 10i64.pow(rhs.ilog10() + 1);
+                (ret % log == rhs).then_some(ret / log)
             }
         })
         .and_then(|res| (res == operands[0]).then_some(()))
