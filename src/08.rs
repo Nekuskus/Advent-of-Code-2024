@@ -1,0 +1,255 @@
+use debug_print::{debug_print as debug, debug_println as debugln};
+use itertools::Itertools;
+use setup_utils::*;
+use std::{
+    collections::HashMap,
+    fmt::{Display, Write},
+    path::Path,
+};
+
+// Symbols to replace: 08 14 9 390 SOLVE2
+
+#[cfg(test)]
+mod tests {
+    use setup_utils::{read_lines, Point};
+    use std::path::Path;
+
+    #[test]
+    fn are_collinear() {
+        assert_eq!(
+            crate::are_collinear(vec![
+                &Point::new(1, 2),
+                &Point::new(2, 3),
+                &Point::new(3, 4)
+            ]),
+            true
+        );
+
+        assert_eq!(
+            crate::are_collinear(vec![
+                &Point::new(1, 2),
+                &Point::new(1, 3),
+                &Point::new(1, 4)
+            ]),
+            true
+        );
+        assert_eq!(
+            crate::are_collinear(vec![
+                &Point::new(1, 2),
+                &Point::new(2, 4),
+                &Point::new(3, 6)
+            ]),
+            true
+        );
+    }
+
+    #[test]
+    fn part1() -> Result<(), String> {
+        let lines = read_lines(Path::new("./inputs/08-1-example.txt"));
+        let result = crate::part1(&lines);
+        if result == 14 {
+            Ok(())
+        } else {
+            Err(format!(
+                "08: Bad result for Part 1 example, expected 14 got {}",
+                result
+            ))
+        }
+    }
+
+    #[test]
+    fn part2() -> Result<(), String> {
+        let lines = read_lines(Path::new("./inputs/08-2-example.txt"));
+        let result = crate::part2(&lines);
+        if result == 9 {
+            Ok(())
+        } else {
+            Err(format!(
+                "08: Bad result for Part 2 example, expected 9 got {}",
+                result
+            ))
+        }
+    }
+
+    #[test]
+    fn full() -> Result<(), String> {
+        let lines = read_lines(Path::new("./inputs/08-full.txt"));
+        let result1 = crate::part1(&lines);
+        //let result2 = crate::part2(&lines);
+
+        if result1 == 390 {
+            Ok(())
+        } else {
+            Err(format!(
+                "08: Bad result for Part 1, expected 390 got {}",
+                result1
+            ))
+        }
+        /*
+        match (result1, result2) {
+            (390, SOLVE2) => Ok(()),
+            (_, SOLVE2) => Err(format!(
+                "08: Bad result for Part 1, expected 390 got {}",
+                result1
+            )),
+            (390, _) => Err(format!(
+                "08: Bad result for Part 2, expected SOLVE2 got {}",
+                result2
+            )),
+            (_, _) => Err(format!(
+                "08: Bad result for Part 1 & 2, expected (390, SOLVE2) got ({}, {})",
+                result1, result2
+            )),
+        }*/
+    }
+}
+
+fn main() {
+    let linesfull = read_lines(Path::new("./inputs/08-full.txt"));
+    let lines1 = read_lines(Path::new("./inputs/08-1-example.txt"));
+    let lines2 = read_lines(Path::new("./inputs/08-2-example.txt"));
+
+    println!("08-full.txt");
+    println!("{}", part1(&linesfull));
+    println!("{}\n", part2(&linesfull));
+
+    println!("08-1-example.txt");
+    println!("{}", part1(&lines1));
+    println!("{}\n", part2(&lines1));
+
+    println!("08-2-example.txt");
+    println!("{}", part1(&lines2));
+    println!("{}", part2(&lines2));
+}
+
+#[derive(Debug, Clone)]
+struct Node {
+    antinodes: Vec<char>,
+}
+
+impl Node {
+    fn new(antinodes: Vec<char>) -> Self {
+        Node {
+            antinodes: antinodes,
+        }
+    }
+}
+
+impl Display for Node {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        if self.antinodes.len() > 0 {
+            f.write_char(self.antinodes[0])
+        } else {
+            f.write_char('.')
+        }
+    }
+}
+
+fn part1(lines: &Vec<String>) -> usize {
+    let mut freq_to_antennae: HashMap<char, Vec<Point>> = HashMap::new();
+    let mut matrix: Vec<Vec<Node>> = lines
+        .iter()
+        .enumerate()
+        .map(|(y, l)| {
+            l.chars()
+                .enumerate()
+                .map(|(x, c)| {
+                    // Init antennae map
+                    if c != '.' {
+                        match freq_to_antennae.get_mut(&c) {
+                            Some(v) => {
+                                v.push(Point::new(x, y));
+                            }
+                            None => {
+                                freq_to_antennae.insert(c, vec![Point::new(x, y)]);
+                            }
+                        }
+                    }
+
+                    // Init antinodes grid
+                    Node::new(vec![])
+                })
+                .collect_vec()
+        })
+        .collect_vec();
+
+    matrix.iter_mut().enumerate().for_each(|(y, line)| {
+        line.iter_mut().enumerate().for_each(|(x, n)| {
+            freq_to_antennae.iter().for_each(|(k, v)| {
+                if *k != '.'
+                    && v.len() > 1
+                    && v.iter().combinations(2).any(|vec| {
+                        let p = Point::new(x, y);
+                        let (d1, d2) = (vec[0].distance(&p), vec[1].distance(&p));
+
+                        let mut newvec = vec![&p];
+                        newvec.extend(vec);
+
+                        are_collinear(newvec.clone()) && (d1 == 2f64 * d2 || d2 == 2f64 * d1)
+                    })
+                {
+                    n.antinodes.push(*k);
+                }
+            });
+        });
+    });
+
+    matrix
+        .iter()
+        .map(|l| l.iter().filter(|n| n.antinodes.len() > 0).count())
+        .sum()
+}
+
+fn part2(lines: &Vec<String>) -> usize {
+    let mut freq_to_antennae: HashMap<char, Vec<Point>> = HashMap::new();
+    let mut matrix: Vec<Vec<Node>> = lines
+        .iter()
+        .enumerate()
+        .map(|(y, l)| {
+            l.chars()
+                .enumerate()
+                .map(|(x, c)| {
+                    // Init antennae map
+                    if c != '.' {
+                        match freq_to_antennae.get_mut(&c) {
+                            Some(v) => {
+                                v.push(Point::new(x, y));
+                            }
+                            None => {
+                                freq_to_antennae.insert(c, vec![Point::new(x, y)]);
+                            }
+                        }
+                    }
+
+                    // Init antinodes grid
+                    Node::new(vec![])
+                })
+                .collect_vec()
+        })
+        .collect_vec();
+
+    matrix.iter_mut().enumerate().for_each(|(y, line)| {
+        line.iter_mut().enumerate().for_each(|(x, n)| {
+            freq_to_antennae.iter().for_each(|(k, v)| {
+                if *k != '.'
+                    && v.len() > 1
+                    && v.iter().combinations(2).any(|vec| {
+                        let p = Point::new(x, y);
+
+                        let mut newvec = vec![&p];
+                        newvec.extend(vec);
+
+                        are_collinear(newvec.clone())
+                    })
+                {
+                    n.antinodes.push(*k);
+                }
+            });
+        });
+    });
+
+    matrix
+        .iter()
+        .map(|l| l.iter().filter(|n| n.antinodes.len() > 0).count())
+        .sum()
+}
