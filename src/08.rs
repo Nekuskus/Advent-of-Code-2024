@@ -1,4 +1,3 @@
-use debug_print::{debug_print as debug, debug_println as debugln};
 use itertools::Itertools;
 use setup_utils::*;
 use std::{
@@ -7,7 +6,7 @@ use std::{
     path::Path,
 };
 
-// Symbols to replace: 08 14 9 390 SOLVE2
+// Symbols to replace: 08 14 9 390 1246
 
 #[cfg(test)]
 mod tests {
@@ -46,7 +45,7 @@ mod tests {
     #[test]
     fn part1() -> Result<(), String> {
         let lines = read_lines(Path::new("./inputs/08-1-example.txt"));
-        let result = crate::part1(&lines);
+        let result = crate::part1(&lines, false);
         if result == 14 {
             Ok(())
         } else {
@@ -74,33 +73,24 @@ mod tests {
     #[test]
     fn full() -> Result<(), String> {
         let lines = read_lines(Path::new("./inputs/08-full.txt"));
-        let result1 = crate::part1(&lines);
-        //let result2 = crate::part2(&lines);
+        let result1 = crate::part1(&lines, false);
+        let result2 = crate::part2(&lines);
 
-        if result1 == 390 {
-            Ok(())
-        } else {
-            Err(format!(
-                "08: Bad result for Part 1, expected 390 got {}",
-                result1
-            ))
-        }
-        /*
         match (result1, result2) {
-            (390, SOLVE2) => Ok(()),
-            (_, SOLVE2) => Err(format!(
+            (390, 1246) => Ok(()),
+            (_, 1246) => Err(format!(
                 "08: Bad result for Part 1, expected 390 got {}",
                 result1
             )),
             (390, _) => Err(format!(
-                "08: Bad result for Part 2, expected SOLVE2 got {}",
+                "08: Bad result for Part 2, expected 1246 got {}",
                 result2
             )),
             (_, _) => Err(format!(
-                "08: Bad result for Part 1 & 2, expected (390, SOLVE2) got ({}, {})",
+                "08: Bad result for Part 1 & 2, expected (390, 1246) got ({}, {})",
                 result1, result2
             )),
-        }*/
+        }
     }
 }
 
@@ -110,15 +100,15 @@ fn main() {
     let lines2 = read_lines(Path::new("./inputs/08-2-example.txt"));
 
     println!("08-full.txt");
-    println!("{}", part1(&linesfull));
+    println!("{}", part1(&linesfull, false));
     println!("{}\n", part2(&linesfull));
 
     println!("08-1-example.txt");
-    println!("{}", part1(&lines1));
+    println!("{}", part1(&lines1, false));
     println!("{}\n", part2(&lines1));
 
     println!("08-2-example.txt");
-    println!("{}", part1(&lines2));
+    println!("{}", part1(&lines2, false));
     println!("{}", part2(&lines2));
 }
 
@@ -145,7 +135,7 @@ impl Display for Node {
     }
 }
 
-fn part1(lines: &Vec<String>) -> usize {
+fn part1(lines: &Vec<String>, ignore_distances: bool) -> usize {
     let mut freq_to_antennae: HashMap<char, Vec<Point>> = HashMap::new();
     let mut matrix: Vec<Vec<Node>> = lines
         .iter()
@@ -185,7 +175,8 @@ fn part1(lines: &Vec<String>) -> usize {
                         let mut newvec = vec![&p];
                         newvec.extend(vec);
 
-                        are_collinear(newvec.clone()) && (d1 == 2f64 * d2 || d2 == 2f64 * d1)
+                        are_collinear(newvec.clone())
+                            && (ignore_distances || (d1 == 2f64 * d2 || d2 == 2f64 * d1))
                     })
                 {
                     n.antinodes.push(*k);
@@ -201,55 +192,5 @@ fn part1(lines: &Vec<String>) -> usize {
 }
 
 fn part2(lines: &Vec<String>) -> usize {
-    let mut freq_to_antennae: HashMap<char, Vec<Point>> = HashMap::new();
-    let mut matrix: Vec<Vec<Node>> = lines
-        .iter()
-        .enumerate()
-        .map(|(y, l)| {
-            l.chars()
-                .enumerate()
-                .map(|(x, c)| {
-                    // Init antennae map
-                    if c != '.' {
-                        match freq_to_antennae.get_mut(&c) {
-                            Some(v) => {
-                                v.push(Point::new(x, y));
-                            }
-                            None => {
-                                freq_to_antennae.insert(c, vec![Point::new(x, y)]);
-                            }
-                        }
-                    }
-
-                    // Init antinodes grid
-                    Node::new(vec![])
-                })
-                .collect_vec()
-        })
-        .collect_vec();
-
-    matrix.iter_mut().enumerate().for_each(|(y, line)| {
-        line.iter_mut().enumerate().for_each(|(x, n)| {
-            freq_to_antennae.iter().for_each(|(k, v)| {
-                if *k != '.'
-                    && v.len() > 1
-                    && v.iter().combinations(2).any(|vec| {
-                        let p = Point::new(x, y);
-
-                        let mut newvec = vec![&p];
-                        newvec.extend(vec);
-
-                        are_collinear(newvec.clone())
-                    })
-                {
-                    n.antinodes.push(*k);
-                }
-            });
-        });
-    });
-
-    matrix
-        .iter()
-        .map(|l| l.iter().filter(|n| n.antinodes.len() > 0).count())
-        .sum()
+    part1(lines, true)
 }

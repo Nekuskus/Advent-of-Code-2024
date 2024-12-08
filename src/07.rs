@@ -1,6 +1,6 @@
 use itertools::Itertools;
 use setup_utils::*;
-use std::{fmt::Display, path::Path, time::Instant};
+use std::{fmt::Display, path::Path};
 
 // Symbols to replace: 07 3749 11387 1399219271639 275791737999003
 
