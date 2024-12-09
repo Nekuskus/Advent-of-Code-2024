@@ -81,7 +81,6 @@ enum Index {
 }
 
 fn part1(lines: &Vec<String>) -> u64 {
-    // Output
     let mut line = lines[0]
         .chars()
         .enumerate()
@@ -150,17 +149,6 @@ fn part1(lines: &Vec<String>) -> u64 {
         }
     }
 
-    // line.iter().for_each(|x| match x {
-    //     Index::Empty { size } => {
-    //         print!("{}", ".".repeat(*size as usize));
-    //     }
-    //     Index::File { id, size } => {
-    //         print!("{}", format!("{id}").repeat(*size as usize));
-    //     }
-    // });
-
-    // println!();
-
     line.iter()
         .map(|item| match item {
             Index::Empty { size } => [&0].repeat(*size as usize),
@@ -168,15 +156,11 @@ fn part1(lines: &Vec<String>) -> u64 {
         })
         .flatten()
         .enumerate()
-        .map(|(idx, size)| {
-            // println!("{idx} * {size} == {}", idx as u32 * size);
-            idx as u64 * size
-        })
+        .map(|(idx, size)| idx as u64 * size)
         .sum()
 }
 
 fn part2(lines: &Vec<String>) -> u64 {
-    // Output
     let mut line = lines[0]
         .chars()
         .enumerate()
@@ -201,7 +185,7 @@ fn part2(lines: &Vec<String>) -> u64 {
             })
             .collect_vec();
 
-        'swap: for dest_idx in empty {
+        for dest_idx in empty {
             match line[source_idx] {
                 Index::Empty { size: _ } => {}
                 Index::File {
@@ -216,21 +200,22 @@ fn part2(lines: &Vec<String>) -> u64 {
                                     size: empty_size,
                                 };
                                 line[source_idx] = Index::Empty { size: dest_size };
-                                break 'swap;
+
+                                break;
                             } else if dest_size < empty_size {
                                 line[dest_idx] = Index::File {
                                     id,
                                     size: dest_size,
                                 };
                                 line[source_idx] = Index::Empty { size: dest_size };
-
                                 line.insert(
                                     dest_idx + 1,
                                     Index::Empty {
                                         size: empty_size - dest_size,
                                     },
                                 );
-                                break 'swap;
+
+                                break;
                             }
                         }
                         Index::File { id: _, size: _ } => unreachable!(),
