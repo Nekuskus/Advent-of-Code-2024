@@ -1,3 +1,4 @@
+use std::cmp::Ordering;
 use std::fmt::Display;
 use std::fs::read_to_string;
 use std::path::Path;
@@ -76,6 +77,21 @@ impl Display for Point {
     }
 }
 
+impl Ord for Point {
+    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+        match self.x.cmp(&other.x) {
+            Ordering::Equal => self.y.cmp(&other.y),
+            x => x,
+        }
+    }
+}
+
+impl PartialOrd for Point {
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        Some(self.cmp(other))
+    }
+}
+
 pub fn are_collinear(vec: Vec<&Point>) -> bool {
     if vec.len() < 3 {
         return true;
@@ -85,4 +101,49 @@ pub fn are_collinear(vec: Vec<&Point>) -> bool {
         (p3.y as f64 - p2.y as f64) * (p2.x as f64 - p1.x as f64)
             == (p2.y as f64 - p1.y as f64) * (p3.x as f64 - p2.x as f64)
     })
+}
+
+#[derive(Debug, Clone, Copy, Hash, Eq)]
+pub struct PointI {
+    pub x: isize,
+    pub y: isize,
+}
+
+impl PointI {
+    pub fn new(x: isize, y: isize) -> Self {
+        PointI { x: x, y: y }
+    }
+}
+
+impl PartialEq for PointI {
+    fn eq(&self, other: &Self) -> bool {
+        self.x == other.x && self.y == other.y
+    }
+}
+
+impl PartialEq<(isize, isize)> for PointI {
+    fn eq(&self, other: &(isize, isize)) -> bool {
+        self.x == other.0 && self.y == other.1
+    }
+}
+
+impl Display for PointI {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(format!("({}, {})", self.x, self.y).as_str())
+    }
+}
+
+impl Ord for PointI {
+    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+        match self.x.cmp(&other.x) {
+            Ordering::Equal => self.y.cmp(&other.y),
+            x => x,
+        }
+    }
+}
+
+impl PartialOrd for PointI {
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        Some(self.cmp(other))
+    }
 }
