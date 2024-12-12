@@ -96,214 +96,7 @@ enum Align {
     Both,
 }
 
-fn count_sides(
-    grid: &Vec<Vec<char>>,
-    perimeter: &BTreeSet<PointI>,
-    shape: &BTreeSet<PointI>,
-) -> usize {
-    let (xlen, ylen) = (grid[0].len() as isize, grid.len() as isize);
-    let shape_p = shape.iter().next().unwrap();
-    let _symbol = grid[shape_p.y as usize][shape_p.x as usize];
-
-    let mut visited_horizontal = BTreeSet::new();
-    let mut visited_vertical = BTreeSet::new();
-
-    let mut sides = 0;
-
-    for p in perimeter {
-        let (mut len_horizontal, mut len_vertical) = (0, 0);
-        let (mut horizontal_twice, mut vertical_twice) = (false, false);
-        let mut queue = VecDeque::from(vec![*p]);
-
-        if !visited_horizontal.contains(p)
-                // bounds check left and right column
-            && !(p.x == -1 || p.x == xlen)
-        {
-            debug!("h {_symbol} ");
-            let mut align = Align::Both;
-
-            while let Some(next) = queue.pop_front() {
-                if !(next.y == -1 || next.y == 0)
-                    && shape.contains(&PointI::new(next.x, next.y - 1))
-                    && (align == Align::Up || align == Align::Both)
-                {
-                    // check up
-                    align = Align::Up;
-
-                    visited_horizontal.insert(next);
-                    len_horizontal += 1;
-
-                    let neighbors = [
-                        PointI::new(next.x - 1, next.y),
-                        PointI::new(next.x + 1, next.y),
-                    ];
-
-                    for n in neighbors {
-                        if perimeter.contains(&n)
-                            && !visited_horizontal.contains(&n)
-                            && !queue.contains(&n)
-                            && shape.contains(&PointI::new(n.x, n.y - 1))
-                        {
-                            queue.push_front(n);
-                        }
-                    }
-                } else if !(next.y == ylen || next.y == ylen - 1)
-                    && shape.contains(&PointI::new(next.x, next.y + 1))
-                    && (align == Align::Down || align == Align::Both)
-                {
-                    // check down
-                    align = Align::Down;
-
-                    visited_horizontal.insert(next);
-                    len_horizontal += 1;
-
-                    let neighbors = [
-                        PointI::new(next.x - 1, next.y),
-                        PointI::new(next.x + 1, next.y),
-                    ];
-
-                    for n in neighbors {
-                        if perimeter.contains(&n)
-                            && !visited_horizontal.contains(&n)
-                            && !queue.contains(&n)
-                            && shape.contains(&PointI::new(n.x, n.y + 1))
-                        {
-                            queue.push_front(n);
-                        }
-                    }
-                } else {
-                    continue;
-                }
-
-                debug!("{next} ");
-                if !(next.x == -1
-                    || next.x == xlen
-                    || next.y == -1
-                    || next.y == 0
-                    || next.y == ylen - 1
-                    || next.y == ylen)
-                    && shape.contains(&PointI::new(next.x, next.y - 1))
-                    && shape.contains(&PointI::new(next.x, next.y + 1))
-                {
-                    // double side, count twice
-                    horizontal_twice = true;
-                }
-            }
-            if horizontal_twice {
-                debug!("twice");
-            }
-            debugln!();
-        }
-
-        queue.clear();
-        queue.push_front(*p);
-
-        if !visited_vertical.contains(p)
-                // bounds check top and bottom row
-            && !(p.y ==  -1 || p.y == ylen)
-        {
-            debug!("v {_symbol} ");
-            let mut align = Align::Both;
-
-            while let Some(next) = queue.pop_front() {
-                if !(next.x == -1 || next.x == 0)
-                    && shape.contains(&PointI::new(next.x - 1, next.y))
-                    && (align == Align::Left || align == Align::Both)
-                {
-                    // check left
-                    align = Align::Left;
-
-                    visited_vertical.insert(next);
-                    len_vertical += 1;
-
-                    let neighbors = [
-                        PointI::new(next.x, next.y - 1),
-                        PointI::new(next.x, next.y + 1),
-                    ];
-
-                    for n in neighbors {
-                        if perimeter.contains(&n)
-                            && !visited_vertical.contains(&n)
-                            && !queue.contains(&n)
-                            && shape.contains(&PointI::new(n.x - 1, n.y))
-                        {
-                            queue.push_front(n);
-                        }
-                    }
-                } else if !(next.x == xlen || next.x == xlen - 1)
-                    && shape.contains(&PointI::new(next.x + 1, next.y))
-                    && (align == Align::Right || align == Align::Both)
-                {
-                    // check right
-                    align = Align::Right;
-
-                    visited_vertical.insert(next);
-                    len_vertical += 1;
-
-                    let neighbors = [
-                        PointI::new(next.x, next.y - 1),
-                        PointI::new(next.x, next.y + 1),
-                    ];
-
-                    for n in neighbors {
-                        if perimeter.contains(&n)
-                            && !visited_vertical.contains(&n)
-                            && !queue.contains(&n)
-                            && shape.contains(&PointI::new(n.x + 1, n.y))
-                        {
-                            queue.push_front(n);
-                        }
-                    }
-                } else {
-                    continue;
-                }
-
-                debug!("{next} ");
-                if !(next.x == -1
-                    || next.x == 0
-                    || next.x == xlen - 1
-                    || next.x == xlen
-                    || next.y == -1
-                    || next.y == ylen)
-                    && shape.contains(&PointI::new(next.x - 1, next.y))
-                    && shape.contains(&PointI::new(next.x + 1, next.y))
-                {
-                    // double side, count twice
-                    vertical_twice = true;
-                }
-            }
-            if vertical_twice {
-                debug!("twice");
-            }
-            debugln!("");
-        }
-
-        if len_horizontal > 0 {
-            if horizontal_twice {
-                sides += 2
-            } else {
-                sides += 1
-            }
-        }
-
-        if len_vertical > 0 {
-            if vertical_twice {
-                sides += 2
-            } else {
-                sides += 1
-            }
-        }
-    }
-
-    sides
-}
-
-fn process_region(
-    grid: &Vec<Vec<char>>,
-    visited: &mut BTreeSet<PointI>,
-    p: &PointI,
-    flatten_sides: bool,
-) -> usize {
+fn process_region(grid: &Vec<Vec<char>>, visited: &mut BTreeSet<PointI>, p: &PointI) -> usize {
     let mut area = BTreeSet::new();
     let mut perimeter = BTreeMap::new();
 
@@ -343,20 +136,7 @@ fn process_region(
         }
     }
 
-    let ret: usize;
-
-    if flatten_sides {
-        let perim = count_sides(&grid, &perimeter.keys().copied().collect(), &area);
-        debugln!(
-            "{symbol} {}\t: area {}, perimeter {} ",
-            area.iter().next().unwrap(),
-            area.len(),
-            perim
-        );
-        ret = area.len() * perim;
-    } else {
-        ret = area.len() * perimeter.iter().map(|(_, v)| v).sum::<usize>();
-    }
+    let ret = area.len() * perimeter.iter().map(|(_, v)| v).sum::<usize>();
 
     visited.extend(area);
 
@@ -373,7 +153,7 @@ fn part1(lines: &Vec<String>) -> usize {
         for (x, _) in line.iter().enumerate() {
             let p = PointI::new(x as isize, y as isize);
             if !visited.contains(&p) {
-                sum += process_region(&matrix, &mut visited, &p, false);
+                sum += process_region(&matrix, &mut visited, &p);
             }
         }
     }
@@ -383,18 +163,8 @@ fn part1(lines: &Vec<String>) -> usize {
 
 fn part2(lines: &Vec<String>) -> usize {
     let matrix = lines.iter().map(|s| s.chars().collect_vec()).collect_vec();
-    let mut visited = BTreeSet::new();
 
     let mut sum = 0;
-
-    for (y, line) in matrix.iter().enumerate() {
-        for (x, _) in line.iter().enumerate() {
-            let p = PointI::new(x as isize, y as isize);
-            if !visited.contains(&p) {
-                sum += process_region(&matrix, &mut visited, &p, true);
-            }
-        }
-    }
 
     sum
 }
