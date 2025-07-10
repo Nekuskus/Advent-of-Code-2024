@@ -2,6 +2,7 @@ use debug_print::{debug_print as debug, debug_println as debugln};
 use itertools::Itertools;
 use utils::*;
 use std::path::Path;
+use debug_print::{debug_print as debug, debug_println as debugln};
 
 // Symbols to replace: FILENUM TEST1 TEST2 SOLVE1 SOLVE2
 

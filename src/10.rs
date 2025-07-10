@@ -1,6 +1,6 @@
-use debug_print::{debug_print as debug, debug_println as debugln};
 use setup_utils::*;
 use std::path::Path;
+use debug_print::{debug_print as debug, debug_println as debugln};
 
 // Symbols to replace: 10 8 10 6768 SOLVE2
 
