@@ -1,7 +1,7 @@
 use setup_utils::*;
 use std::path::Path;
 
-// Symbols to replace: 09 114 TEST2 2043183816 SOLVE2
+// Symbols to replace: 09 114 2 2043183816 SOLVE2
 
 
 #[cfg(test)]
@@ -11,7 +11,7 @@ mod tests {
 
     #[test]
     fn part1() -> Result<(), String> {
-        let lines = read_lines(Path::new("./inputs/09-1-example.txt"));
+        let lines = read_lines(Path::new("./inputs/09-example.txt"));
         let result = crate::part1(&lines);
         if result == 114 {
             Ok(())
@@ -19,15 +19,15 @@ mod tests {
             Err(format!("09: Bad result for Part 1 example, expected 114 got {}", result))
         }
     }
-    /*
+    
     #[test]
     fn part2() -> Result<(), String> {
-        let lines = read_lines(Path::new("./inputs/09-2-example.txt"));
+        let lines = read_lines(Path::new("./inputs/09-example.txt"));
         let result = crate::part2(&lines);
-        if result == TEST2 {
+        if result == 2 {
             Ok(())
         } else {
-            Err(format!("09: Bad result for Part 2 example, expected TEST2 got {}", result))
+            Err(format!("09: Bad result for Part 2 example, expected 2 got {}", result))
         }
     }
 
@@ -50,32 +50,25 @@ mod tests {
             (_, _) => Err(format!("09: Bad result for Part 1 & 2, expected (2043183816, SOLVE2) got ({}, {})", result1, result2))
         }*/
     }
-    */
 }
 
 fn main() {
     let linesfull = read_lines(Path::new("./inputs/09-full.txt"));
-    let lines1 = read_lines(Path::new("./inputs/09-1-example.txt"));
+    let lines1 = read_lines(Path::new("./inputs/09-example.txt"));
     //let lines2 = read_lines(Path::new("./inputs/09-2-example.txt"));
 
     println!("09-full.txt");
     println!("{}", part1(&linesfull));
-    //println!("{}\n", part2(&linesfull));
+    println!("{}\n", part2(&linesfull));
     
     println!("09-1-example.txt");
     println!("{}", part1(&lines1));
-    //println!("{}\n", part2(&lines1));
-    
-    
-    //println!("09-2-example.txt");
-    //println!("{}", part1(&lines2));
-    //println!("{}", part2(&lines2));
-    
+    println!("{}\n", part2(&lines1));
 }
 
 
 fn evaluate_history(nums: Vec<i32>) -> i32 {
-    //println!("{nums:?}");
+    println!("{nums:?}");
     if nums.iter().all(|n| n == &0) {
         return 0;
     }
@@ -92,8 +85,8 @@ fn part1(lines: &Vec<String>) -> i32 {
     let total = lines.iter().map(|s| s.split(" ").map(|item| item.parse::<i32>().unwrap()).collect::<Vec<_>>()).map(evaluate_history).sum();
     return total;
 }
-/*
-fn part2(lines: &Vec<String>) -> i32 {
 
+fn part2(lines: &Vec<String>) -> i32 {
+    let reversed = lines.iter().map(|line| line.split(" ").collect::<Vec<_>>().iter().rev().map(|s| s.to_string()).collect::<Vec<String>>().join(" ")).collect::<Vec<_>>();
+    part1(&reversed)
 }
-*/
