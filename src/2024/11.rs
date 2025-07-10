@@ -1,13 +1,12 @@
 use itertools::Itertools;
 use utils::*;
-use std::{collections::HashMap, path::Path};
+use std::collections::HashMap;
 
 // Symbols to replace: 11 55312 TEST2 186203 221291560078593
 
 #[cfg(test)]
 mod tests {
     use utils::get_input;
-    use std::path::Path;
 
     #[test]
     fn part1() -> Result<(), String> {
@@ -62,7 +61,7 @@ fn main() {
 
 fn process_tree(cache: &mut HashMap<(u128, u8), u128>, num: u128, counter: u8) -> u128 {
     if cache.contains_key(&(num, counter)) {
-        return cache.get(&(num, counter)).unwrap().clone();
+        return *cache.get(&(num, counter)).unwrap();
     }
 
     if counter == 0 {
@@ -71,9 +70,9 @@ fn process_tree(cache: &mut HashMap<(u128, u8), u128>, num: u128, counter: u8) -
 
     let res = match num {
         0 => process_tree(cache, 1, counter - 1),
-        _ if (num.ilog10() + 1) % 2 == 0 => {
+        _ if (num.ilog10() + 1).is_multiple_of(2) => {
             let log = num.ilog10();
-            let pow = 10u128.pow((log + 1) / 2);
+            let pow = 10u128.pow(log.div_ceil(2));
 
             process_tree(cache, num / pow, counter - 1)
                 + process_tree(cache, num % pow, counter - 1)
@@ -81,7 +80,7 @@ fn process_tree(cache: &mut HashMap<(u128, u8), u128>, num: u128, counter: u8) -
         _ => process_tree(cache, num * 2024, counter - 1),
     };
 
-    cache.insert((num, counter), res.clone());
+    cache.insert((num, counter), res);
 
     res
 }

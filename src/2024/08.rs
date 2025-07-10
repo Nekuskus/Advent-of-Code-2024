@@ -3,7 +3,6 @@ use utils::*;
 use std::{
     collections::HashMap,
     fmt::{Display, Write},
-    path::Path,
 };
 
 // Symbols to replace: 08 14 9 390 1246
@@ -11,7 +10,6 @@ use std::{
 #[cfg(test)]
 mod tests {
     use utils::{get_input, Point};
-    use std::path::Path;
 
     #[test]
     fn are_collinear() {
@@ -120,14 +118,14 @@ struct Node {
 impl Node {
     fn new(antinodes: Vec<char>) -> Self {
         Node {
-            antinodes: antinodes,
+            antinodes,
         }
     }
 }
 
 impl Display for Node {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        if self.antinodes.len() > 0 {
+        if !self.antinodes.is_empty() {
             f.write_char(self.antinodes[0])
         } else {
             f.write_char('.')
@@ -187,7 +185,7 @@ fn part1(lines: &Vec<String>, ignore_distances: bool) -> usize {
 
     matrix
         .iter()
-        .map(|l| l.iter().filter(|n| n.antinodes.len() > 0).count())
+        .map(|l| l.iter().filter(|n| !n.antinodes.is_empty()).count())
         .sum()
 }
 

@@ -1,13 +1,12 @@
 use itertools::Itertools;
 use utils::*;
-use std::{fmt::Display, path::Path};
+use std::fmt::Display;
 
 // Symbols to replace: 07 3749 11387 1399219271639 275791737999003
 
 #[cfg(test)]
 mod tests {
     use utils::get_input;
-    use std::path::Path;
 
     #[test]
     fn part1() -> Result<(), String> {
@@ -149,7 +148,7 @@ fn part1(lines: &Vec<String>) -> i64 {
         .filter_map(|(lhs, operands)| {
             itertools::repeat_n(operations.iter(), operands.len() - 1) // permutation with replacements
                 .multi_cartesian_product()
-                .any(|ops| rprocess_ops(ops, &operands, *lhs).is_some())
+                .any(|ops| rprocess_ops(ops, operands, *lhs).is_some())
                 .then_some(lhs)
         })
         .sum()
@@ -178,7 +177,7 @@ fn part2(lines: &Vec<String>) -> i64 {
         .filter_map(|(lhs, operands)| {
             itertools::repeat_n(operations.iter(), operands.len() - 1) // permutation with replacements
                 .multi_cartesian_product()
-                .any(|ops| rprocess_ops(ops, &operands, *lhs).is_some())
+                .any(|ops| rprocess_ops(ops, operands, *lhs).is_some())
                 .then_some(lhs)
         })
         .sum()

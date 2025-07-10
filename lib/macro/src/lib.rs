@@ -1,6 +1,16 @@
 extern crate proc_macro;
 use proc_macro::TokenStream;
 
+
+/// Dynamically includes a file from the correct `inputs` subdirectory using `include_str!`. Platform independent.
+/// 
+/// # Example
+/// 
+/// ```
+/// // src/2024/01.rs
+/// // Resolves into "include_str!(r#"{crate_root}/inputs/2024/01-example.txt"#).lines().map(|s| s.to_string()).collect()"
+/// let lines1: Vec<String> = get_input!("01-example.txt");
+/// ```
 #[proc_macro]
 pub fn get_input(_item: TokenStream) -> TokenStream {
     let span = proc_macro::Span::call_site();

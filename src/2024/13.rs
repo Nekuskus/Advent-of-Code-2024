@@ -1,14 +1,13 @@
 use itertools::Itertools;
 use regex::Regex;
 use utils::*;
-use std::{collections::HashMap, path::Path};
+use std::collections::HashMap;
 
 // Symbols to replace: 13 480 TEST2 35082 82570698600470
 
 #[cfg(test)]
 mod tests {
     use utils::get_input;
-    use std::path::Path;
 
     #[test]
     fn part1() -> Result<(), String> {
@@ -78,7 +77,7 @@ fn optimise_machine(
     let cost_b = 1;
 
     if cache.contains_key(&(cur, spent)) {
-        return cache.get(&(cur, spent)).unwrap().clone();
+        return *cache.get(&(cur, spent)).unwrap();
     }
 
     if cur > mac.prize {
@@ -128,7 +127,7 @@ fn part1(lines: &Vec<String>) -> u64 {
 
     lines
         .iter()
-        .filter(|l| l.len() != 0)
+        .filter(|l| !l.is_empty())
         .chunks(3)
         .into_iter()
         .map(|mut c| {
@@ -156,8 +155,7 @@ fn part1(lines: &Vec<String>) -> u64 {
             }
         })
         // .map(|m| optimise_machine(&mut HashMap::new(), &m, Point::new(0, 0), 0))
-        .map(|m| solve_matrix(machine_to_matrix(&m)))
-        .filter_map(|opt| opt)
+        .filter_map(|m| solve_matrix(machine_to_matrix(&m)))
         .map(|(a, b)| {
             if a >= 0.0 && a.round() == a && b >= 0.0 && b.round() == b {
                 (a * 3.0 + b) as u64
@@ -202,7 +200,7 @@ fn solve_matrix(m: [[f64; 3]; 2]) -> Option<(f64, f64)> {
 
     let y = num2 / denom2;
 
-    return Some((x, y));
+    Some((x, y))
 }
 
 fn part2(lines: &Vec<String>) -> u64 {
@@ -211,7 +209,7 @@ fn part2(lines: &Vec<String>) -> u64 {
 
     lines
         .iter()
-        .filter(|l| l.len() != 0)
+        .filter(|l| !l.is_empty())
         .chunks(3)
         .into_iter()
         .map(|mut c| {
@@ -250,8 +248,7 @@ fn part2(lines: &Vec<String>) -> u64 {
                 ),
             }
         })
-        .map(|m| solve_matrix(machine_to_matrix(&m)))
-        .filter_map(|opt| opt)
+        .filter_map(|m| solve_matrix(machine_to_matrix(&m)))
         .map(|(a, b)| {
             if a >= 0.0 && a.round() == a && b >= 0.0 && b.round() == b {
                 (a * 3.0 + b) as u64

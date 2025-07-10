@@ -1,13 +1,12 @@
 use itertools::Itertools;
 use utils::*;
-use std::{collections::VecDeque, path::Path};
+use std::collections::VecDeque;
 
 // Symbols to replace: 09 1928 2858 6283404590840 6304576012713
 
 #[cfg(test)]
 mod tests {
     use utils::get_input;
-    use std::path::Path;
 
     #[test]
     fn part1() -> Result<(), String> {
@@ -150,11 +149,10 @@ fn part1(lines: &Vec<String>) -> u64 {
     }
 
     line.iter()
-        .map(|item| match item {
+        .flat_map(|item| match item {
             Index::Empty { size } => [&0].repeat(*size as usize),
             Index::File { id, size } => [id].repeat(*size as usize),
         })
-        .flatten()
         .enumerate()
         .map(|(idx, size)| idx as u64 * size)
         .sum()
@@ -226,11 +224,10 @@ fn part2(lines: &Vec<String>) -> u64 {
     }
 
     line.iter()
-        .map(|item| match item {
+        .flat_map(|item| match item {
             Index::Empty { size } => [&0].repeat(*size as usize),
             Index::File { id, size } => [id].repeat(*size as usize),
         })
-        .flatten()
         .enumerate()
         .map(|(idx, size)| {
             // println!("{idx} * {size} == {}", idx as u32 * size);

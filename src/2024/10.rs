@@ -1,16 +1,12 @@
 use itertools::Itertools;
 use utils::*;
-use std::{
-    collections::{HashMap, HashSet},
-    path::Path,
-};
+use std::collections::{HashMap, HashSet};
 
 // Symbols to replace: 10 36 81 789 SOLVE2
 
 #[cfg(test)]
 mod tests {
     use utils::get_input;
-    use std::path::Path;
 
     #[test]
     fn part1() -> Result<(), String> {
@@ -141,12 +137,11 @@ fn part1(lines: &Vec<String>) -> usize {
     let trailheads = matrix
         .iter()
         .enumerate()
-        .map(|(y, l)| {
+        .flat_map(|(y, l)| {
             l.iter()
                 .enumerate()
                 .filter_map(move |(x, &d)| (d == 0).then_some(Point::new(x, y)))
-        })
-        .flatten();
+        });
 
     trailheads.map(|p| search_trails(&matrix, p, 1)).sum()
 }
@@ -188,12 +183,11 @@ fn part2(lines: &Vec<String>) -> usize {
     let trailheads = matrix
         .iter()
         .enumerate()
-        .map(|(y, l)| {
+        .flat_map(|(y, l)| {
             l.iter()
                 .enumerate()
                 .filter_map(move |(x, &d)| (d == 0).then_some(Point::new(x, y)))
-        })
-        .flatten();
+        });
 
     trailheads.map(|p| search_trails_p2(&matrix, p, 1)).sum()
 }

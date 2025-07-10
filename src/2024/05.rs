@@ -1,13 +1,12 @@
 use utils::*;
 use std::cmp::Ordering;
-use std::{collections::HashMap, path::Path};
+use std::collections::HashMap;
 
 // Symbols to replace: 05 143 123 6051 5093
 
 #[cfg(test)]
 mod tests {
     use utils::get_input;
-    use std::path::Path;
 
     #[test]
     fn part1() -> Result<(), String> {

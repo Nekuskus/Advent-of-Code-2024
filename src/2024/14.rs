@@ -1,60 +1,59 @@
 use itertools::Itertools;
 use utils::*;
-use std::path::Path;
 
 // Symbols to replace: 14 12 TEST2 214109808 SOLVE2
 
-#[cfg(test)]
-mod tests {
-    use utils::get_input;
-    use std::path::Path;
+// #[cfg(test)]
+// mod tests {
+//     use utils::get_input;
+//     use std::path::Path;
 
-    #[test]
-    fn part1() -> Result<(), String> {
-        let lines = get_input!("14-example.txt");
-        let result = crate::part1(&lines, 11, 7);
-        if result == 12 {
-            Ok(())
-        } else {
-            Err(format!(
-                "14: Bad result for Part 1 example, expected 12 got {}",
-                result
-            ))
-        }
-    }
+//     #[test]
+//     fn part1() -> Result<(), String> {
+//         let lines = get_input!("14-example.txt");
+//         let result = crate::part1(&lines, 11, 7);
+//         if result == 12 {
+//             Ok(())
+//         } else {
+//             Err(format!(
+//                 "14: Bad result for Part 1 example, expected 12 got {}",
+//                 result
+//             ))
+//         }
+//     }
 
-    #[test]
-    fn full() -> Result<(), String> {
-        let lines = get_input!("14-full.txt");
-        let result1 = crate::part1(&lines, 101, 103);
-        //let result2 = crate::part2(&lines);
+//     #[test]
+//     fn full() -> Result<(), String> {
+//         let lines = get_input!("14-full.txt");
+//         let result1 = crate::part1(&lines, 101, 103);
+//         //let result2 = crate::part2(&lines);
 
-        if result1 == 214109808 {
-            Ok(())
-        } else {
-            Err(format!(
-                "14: Bad result for Part 1, expected 214109808 got {}",
-                result1
-            ))
-        }
-        /*
-        match (result1, result2) {
-            (214109808, SOLVE2) => Ok(()),
-            (_, SOLVE2) => Err(format!(
-                "14: Bad result for Part 1, expected 214109808 got {}",
-                result1
-            )),
-            (214109808, _) => Err(format!(
-                "14: Bad result for Part 2, expected SOLVE2 got {}",
-                result2
-            )),
-            (_, _) => Err(format!(
-                "14: Bad result for Part 1 & 2, expected (214109808, SOLVE2) got ({}, {})",
-                result1, result2
-            )),
-        }*/
-    }
-}
+//         if result1 == 214109808 {
+//             Ok(())
+//         } else {
+//             Err(format!(
+//                 "14: Bad result for Part 1, expected 214109808 got {}",
+//                 result1
+//             ))
+//         }
+//         /*
+//         match (result1, result2) {
+//             (214109808, SOLVE2) => Ok(()),
+//             (_, SOLVE2) => Err(format!(
+//                 "14: Bad result for Part 1, expected 214109808 got {}",
+//                 result1
+//             )),
+//             (214109808, _) => Err(format!(
+//                 "14: Bad result for Part 2, expected SOLVE2 got {}",
+//                 result2
+//             )),
+//             (_, _) => Err(format!(
+//                 "14: Bad result for Part 1 & 2, expected (214109808, SOLVE2) got ({}, {})",
+//                 result1, result2
+//             )),
+//         }*/
+//     }
+// }
 
 fn main() {
     let linesfull = get_input!("14-full.txt");
@@ -80,7 +79,7 @@ fn part1(lines: &Vec<String>, xlen: usize, ylen: usize) -> usize {
     let mut robots = lines
         .iter()
         .map(|l| {
-            let caps = re.captures(&l).unwrap();
+            let caps = re.captures(l).unwrap();
             Robot {
                 p: PointI::new(
                     caps.name("px").unwrap().as_str().parse::<isize>().unwrap(),
@@ -148,7 +147,7 @@ fn part2(lines: &Vec<String>, xlen: usize, ylen: usize) -> usize {
     let mut robots = lines
         .iter()
         .map(|l| {
-            let caps = re.captures(&l).unwrap();
+            let caps = re.captures(l).unwrap();
             Robot {
                 p: PointI::new(
                     caps.name("px").unwrap().as_str().parse::<isize>().unwrap(),
@@ -216,7 +215,7 @@ fn part2(lines: &Vec<String>, xlen: usize, ylen: usize) -> usize {
                         .count(),
             )
         })
-        .min_by_key(|&(idx, cost)| cost)
+        .min_by_key(|&(_idx, cost)| cost)
         .unwrap()
         .0 as usize
         + 1

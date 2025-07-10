@@ -1,16 +1,12 @@
 use itertools::Itertools;
 use utils::*;
-use std::{
-    collections::{BTreeMap, BTreeSet, VecDeque},
-    path::Path,
-};
+use std::collections::{BTreeMap, BTreeSet, VecDeque};
 
 // Symbols to replace: 12 1930 1206 1387004 844198
 
 #[cfg(test)]
 mod tests {
     use utils::get_input;
-    use std::path::Path;
 
     #[test]
     fn part1() -> Result<(), String> {
@@ -88,7 +84,7 @@ fn process_region(
     let (xlen, ylen) = (grid[0].len() as isize, grid.len() as isize);
     let symbol = grid[p.y as usize][p.x as usize];
 
-    let mut queue = VecDeque::from(vec![PointI::new(p.x as isize, p.y as isize)]);
+    let mut queue = VecDeque::from(vec![PointI::new(p.x, p.y)]);
 
     while let Some(next) = queue.pop_front() {
         area.insert(next);
@@ -108,7 +104,7 @@ fn process_region(
                 || grid[n.y as usize][n.x as usize] != symbol
             {
                 // println!("{symbol} {next}");
-                let conv = PointI::new(n.x as isize, n.y as isize);
+                let conv = PointI::new(n.x, n.y);
                 match perimeter.get_mut(&conv) {
                     Some(count) => *count += 1,
                     None => {
@@ -137,7 +133,7 @@ fn part1(lines: &Vec<String>) -> usize {
             let p = PointI::new(x as isize, y as isize);
             if !visited.contains(&p) {
                 let (area, perimeter) = process_region(&matrix, &mut visited, &p);
-                sum += area.len() * perimeter.iter().map(|(_, v)| v).sum::<usize>();
+                sum += area.len() * perimeter.values().sum::<usize>();
             }
         }
     }

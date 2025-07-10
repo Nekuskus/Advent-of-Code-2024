@@ -1,64 +1,63 @@
 use utils::*;
-use std::{collections::HashMap, path::Path};
+use std::collections::HashMap;
 
 // Symbols to replace: 01 11 31 1666427 24316233
 
-// #[cfg(test)]
-// mod tests {
-//     use utils::get_input;
-//     use std::path::Path;
+#[cfg(test)]
+mod tests {
+    use utils::get_input;
 
-//     #[test]
-//     fn part1() -> Result<(), String> {
-//         let lines = get_input!("01-example.txt");
-//         let result = crate::part1(&lines);
-//         if result == 11 {
-//             Ok(())
-//         } else {
-//             Err(format!(
-//                 "01: Bad result for Part 1 example, expected 11 got {}",
-//                 result
-//             ))
-//         }
-//     }
+    #[test]
+    fn part1() -> Result<(), String> {
+        let lines = get_input!("01-example.txt");
+        let result = crate::part1(&lines);
+        if result == 11 {
+            Ok(())
+        } else {
+            Err(format!(
+                "01: Bad result for Part 1 example, expected 11 got {}",
+                result
+            ))
+        }
+    }
 
-//     #[test]
-//     fn part2() -> Result<(), String> {
-//         let lines = get_input!("01-example.txt");
-//         let result = crate::part2(&lines);
-//         if result == 31 {
-//             Ok(())
-//         } else {
-//             Err(format!(
-//                 "01: Bad result for Part 2 example, expected 31 got {}",
-//                 result
-//             ))
-//         }
-//     }
+    #[test]
+    fn part2() -> Result<(), String> {
+        let lines = get_input!("01-example.txt");
+        let result = crate::part2(&lines);
+        if result == 31 {
+            Ok(())
+        } else {
+            Err(format!(
+                "01: Bad result for Part 2 example, expected 31 got {}",
+                result
+            ))
+        }
+    }
 
-//     #[test]
-//     fn full() -> Result<(), String> {
-//         let lines = get_input!("01-full.txt");
-//         let result1 = crate::part1(&lines);
-//         let result2 = crate::part2(&lines);
+    #[test]
+    fn full() -> Result<(), String> {
+        let lines = get_input!("01-full.txt");
+        let result1 = crate::part1(&lines);
+        let result2 = crate::part2(&lines);
 
-//         match (result1, result2) {
-//             (1666427, 24316233) => Ok(()),
-//             (_, 24316233) => Err(format!(
-//                 "01: Bad result for Part 1, expected 1666427 got {}",
-//                 result1
-//             )),
-//             (1666427, _) => Err(format!(
-//                 "01: Bad result for Part 2, expected 24316233 got {}",
-//                 result2
-//             )),
-//             (_, _) => Err(format!(
-//                 "01: Bad result for Part 1 & 2, expected (1666427, 24316233) got ({}, {})",
-//                 result1, result2
-//             )),
-//         }
-//     }
-// }
+        match (result1, result2) {
+            (1666427, 24316233) => Ok(()),
+            (_, 24316233) => Err(format!(
+                "01: Bad result for Part 1, expected 1666427 got {}",
+                result1
+            )),
+            (1666427, _) => Err(format!(
+                "01: Bad result for Part 2, expected 24316233 got {}",
+                result2
+            )),
+            (_, _) => Err(format!(
+                "01: Bad result for Part 1 & 2, expected (1666427, 24316233) got ({}, {})",
+                result1, result2
+            )),
+        }
+    }
+}
 
 fn main() {
     let linesfull = get_input!("01-full.txt");

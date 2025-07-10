@@ -2,14 +2,12 @@
 
 use itertools::Itertools;
 use utils::*;
-use std::{iter, path::Path};
 
 // Symbols to replace: 02 2 4 472 520
 
 #[cfg(test)]
 mod tests {
     use utils::get_input;
-    use std::path::Path;
 
     #[test]
     fn part1() -> Result<(), String> {
@@ -90,7 +88,7 @@ fn part1(lines: &Vec<String>) -> usize {
             line.split_ascii_whitespace()
                 .map(|num| num.parse::<i32>().unwrap())
         })
-        .filter(|parsed| validate_report(parsed))
+        .filter(validate_report)
         .count()
 }
 
@@ -115,8 +113,7 @@ fn part2(lines: &Vec<String>) -> usize {
         .filter(|parsed| {
             let base_vec = parsed.clone().collect::<Vec<i32>>();
 
-            iter::repeat(base_vec.iter().copied())
-                .take(base_vec.len())
+            std::iter::repeat_n(base_vec.iter().copied(), base_vec.len())
                 .enumerate()
                 .any(|(idx, it)| validate_report_skip(&it, idx))
         })

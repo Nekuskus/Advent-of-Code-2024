@@ -1,12 +1,10 @@
 use utils::*;
-use std::path::Path;
 
 // Symbols to replace: 04 18 9 2521 1912
 
 #[cfg(test)]
 mod tests {
     use utils::get_input;
-    use std::path::Path;
 
     #[test]
     fn part1() -> Result<(), String> {
@@ -121,7 +119,7 @@ fn part1(lines: &Vec<String>) -> usize {
         .iter()
         .map(|s| s.chars().collect::<Vec<char>>())
         .collect();
-    let needle = vec!['M', 'A', 'S'];
+    let needle = ['M', 'A', 'S'];
     let mut count = 0;
 
     for (y, line) in matrix.iter().enumerate() {
@@ -155,8 +153,8 @@ fn part2(lines: &Vec<String>) -> usize {
 
     for (y, line) in matrix.iter().enumerate() {
         for (x, &c) in line.iter().enumerate() {
-            if c == 'A' {
-                if x > 0 && x < line.len() - 1 && y > 0 && y < matrix.len() - 1 {
+            if c == 'A'
+                && x > 0 && x < line.len() - 1 && y > 0 && y < matrix.len() - 1 {
                     let strings: [String; 2] = [
                         [matrix[y - 1][x - 1], 'A', matrix[y + 1][x + 1]]
                             .iter()
@@ -170,7 +168,6 @@ fn part2(lines: &Vec<String>) -> usize {
                         count += 1;
                     }
                 }
-            }
         }
     }
 

@@ -1,12 +1,11 @@
 use utils::*;
-use std::{collections::HashSet, iter, path::Path};
+use std::{collections::HashSet, iter};
 
 // Symbols to replace: 06 41 6 4977 1729
 
 #[cfg(test)]
 mod tests {
     use utils::get_input;
-    use std::path::Path;
 
     #[test]
     fn part1() -> Result<(), String> {
@@ -211,7 +210,7 @@ fn part2(lines: &Vec<String>) -> usize {
     matrix[p.y][p.x] = 'X';
 
     let mut check_matrix = matrix.clone();
-    let (mut loop_p, mut loop_d) = (p.clone(), d.clone());
+    let (mut loop_p, mut loop_d) = (p, d);
     // first pass to find viable points
     while let Some((newp, newd)) = matrix_step(&check_matrix, &loop_p, loop_d, None) {
         loop_p = newp;
@@ -222,7 +221,7 @@ fn part2(lines: &Vec<String>) -> usize {
     let visited = check_matrix
         .iter()
         .enumerate()
-        .map(|(y, line)| {
+        .flat_map(|(y, line)| {
             line.iter()
                 .enumerate()
                 .filter_map(|(x, &c)| {
@@ -234,7 +233,6 @@ fn part2(lines: &Vec<String>) -> usize {
                 })
                 .collect::<Vec<Point>>()
         })
-        .flatten()
         .collect::<HashSet<Point>>();
 
     iter::repeat_n(&matrix, visited.len())
@@ -245,12 +243,12 @@ fn part2(lines: &Vec<String>) -> usize {
                 return false;
             }
 
-            let (mut p, mut d) = (p.clone(), d.clone());
+            let (mut p, mut d) = (p, d);
 
             let mut history = HashSet::new();
             history.insert((p, d));
 
-            while let Some((newp, newd)) = matrix_step(&matrix, &p, d, Some(ignore)) {
+            while let Some((newp, newd)) = matrix_step(matrix, &p, d, Some(ignore)) {
                 p = newp;
                 d = newd;
 

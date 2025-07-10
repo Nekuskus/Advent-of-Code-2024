@@ -1,13 +1,11 @@
 use regex::Regex;
 use utils::*;
-use std::path::Path;
 
 // Symbols to replace: 03 161 48 185797128 89798695
 
 #[cfg(test)]
 mod tests {
     use utils::get_input;
-    use std::path::Path;
 
     #[test]
     fn part1() -> Result<(), String> {
@@ -85,7 +83,7 @@ fn part1(lines: &Vec<String>) -> i32 {
     lines
         .iter()
         .map(|line| {
-            re.captures_iter(&line)
+            re.captures_iter(line)
                 .map(|caps| {
                     caps.name("first").unwrap().as_str().parse::<i32>().unwrap()
                         * caps
@@ -111,7 +109,7 @@ fn part2(lines: &Vec<String>) -> i32 {
         .iter()
         .map(|line| {
             remul
-                .captures_iter(&line)
+                .captures_iter(line)
                 .map(|caps| match &caps[0] {
                     "do()" => {
                         enabled = true;
