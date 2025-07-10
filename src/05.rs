@@ -14,7 +14,7 @@ struct RangeMap {
 #[allow(dead_code)]
 impl RangeMap
 {
-    pub fn new(from_start: u64, to_start: u64, length: u64) -> RangeMap {
+    pub fn new(from_start: u64, to_start: u64, length: u64) -> Self {
         return RangeMap {
             from_start: from_start,
             to_start: to_start,
