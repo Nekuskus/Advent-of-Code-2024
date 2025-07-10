@@ -44,7 +44,6 @@ mod tests {
         let result1 = crate::part1(&lines);
         let result2 = crate::part2(&lines);
 
-        
         match (result1, result2) {
             (109939, 101010) => Ok(()),
             (_, 101010) => Err(format!("14: Bad result for Part 1, expected 109939 got {}", result1)),
