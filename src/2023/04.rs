@@ -74,25 +74,21 @@ fn main() {
 fn part1(lines: &Vec<String>) -> i32 {
     let mut sum_of_points = 0;
     for line in lines {
-        let nums_line = line.split(":").collect::<Vec<_>>()[1]
+        let mut nums_line = line.split(":").nth(1).expect(format!("Improperly formatted line: {}", line).as_str())
             .trim()
             .split('|')
-            .map(|s| s.trim())
-            .collect::<Vec<_>>();
-        let winning = nums_line[0]
+            .map(|s| s.trim());
+        let winning = nums_line.next().expect(format!("Improperly formatted line, missing winning numbers: {}", line).as_str())
             .trim()
             .split_ascii_whitespace()
             .map(|s| s.trim().parse::<i32>().expect(&format!("bad int error num={}", s)))
             .collect::<HashSet<_>>();
-        let scratched = nums_line[1]
+        let scratched = nums_line.next().expect(format!("Improperly formatted line, missing scratched numbers: {}", line).as_str())
             .trim()
             .split_ascii_whitespace()
             .map(|s| s.parse::<i32>().expect(&format!("bad int error num={}", s)))
             .collect::<HashSet<_>>();
-        let found: HashSet<i32> = winning
-            .intersection(&scratched)
-            .copied()
-            .collect();
+        let found = &winning & &scratched;
         if len!(found) > 0 {
             let score = 2_i32.pow(len!(found) as u32 - 1);
             sum_of_points += score;
@@ -104,30 +100,27 @@ fn part1(lines: &Vec<String>) -> i32 {
 fn part2(lines: &Vec<String>) -> i32 {
     let mut total_count = 0;
     let lines_parsed = lines.iter().map(|line| {
-        let split_line = line.split(":").collect::<Vec<_>>();
-        let nums_line = split_line[1]
+        let mut split_line = line.split(":");
+        let game_id = split_line.next().expect(format!("Improperly formatted line, missing game_id: {}", line).as_str())
+            .split_ascii_whitespace()
+            .nth(1).unwrap()
+            .parse::<usize>().expect(&format!("bad int error num={}", line));
+        let mut nums_line = split_line.next().expect(format!("Improperly formatted line: {}", line).as_str())
             .trim()
             .split('|')
-            .map(|s| s.trim())
-            .collect::<Vec<_>>();
-        let game_id = split_line[0].split_ascii_whitespace().collect::<Vec<_>>()[1]
-            .parse::<usize>()
-            .unwrap();
-        let winning = nums_line[0]
+            .map(|s| s.trim());
+        let winning = nums_line.next().expect(format!("Improperly formatted line, missing winning numbers: {}", line).as_str())
             .trim()
             .split_ascii_whitespace()
             .map(|s| s.trim().parse::<i32>().expect(&format!("bad int error num={}", s)))
             .collect::<HashSet<_>>();
-        let scratched = nums_line[1]
+        let scratched = nums_line.next().expect(format!("Improperly formatted line, missing scratched numbers: {}", line).as_str())
             .trim()
             .replace("  ", " ")
             .split_ascii_whitespace()
             .map(|s| s.parse::<i32>().expect(&format!("bad int error num={}", s)))
             .collect::<HashSet<_>>();
-        let found: HashSet<i32> = winning
-            .intersection(&scratched)
-            .copied()
-            .collect();
+        let found = &winning & &scratched;
         return (game_id - 1, len!(found));
     }).collect::<Vec<_>>();
 

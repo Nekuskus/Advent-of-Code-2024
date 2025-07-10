@@ -226,9 +226,9 @@ fn part2(lines: &Vec<String>) -> i64 {
             },
             "L" => {
                 if grid_lines.contains_key(&y_pointer) {
-                    grid_lines.get_mut(&y_pointer).unwrap().push((x_pointer, x_pointer - count));
+                    grid_lines.get_mut(&y_pointer).unwrap().push((x_pointer - count, x_pointer));
                 } else {
-                    grid_lines.insert(y_pointer, vec![((x_pointer, x_pointer - count))]);
+                    grid_lines.insert(y_pointer, vec![((x_pointer - count, x_pointer))]);
                 }
                 x_pointer -= count;
             },
@@ -242,35 +242,41 @@ fn part2(lines: &Vec<String>) -> i64 {
     }
 
     let mut counter: i64 = 0;
-    let mut line_iter = vec.iter();
+    let line_iter = vec.iter();
     
     // These correspond to each other
     let mut pointers: Vec<(i64, i64)> = Vec::new();
     let mut prev_lens: Vec<i64> = Vec::new();
     let mut prev_line_num = i64::MIN;
 
-    for (line_num, line) in line_iter {
+    for (&line_num, ref line) in line_iter {
         if prev_line_num == i64::MIN {
-            let mut cloned = (*line).clone();
+            let mut cloned = (**line).clone();
             let mut lens: Vec<i64> = line.iter().map(|(_x1, _x2)| _x2 - _x1 + 1).collect();
             lens.iter().for_each(|&length| {counter += length});
             //debugln!("{cloned:?}\n{lens:?}");
             prev_lens.append(&mut lens);
             pointers.append(&mut cloned);
-            prev_line_num = **line_num;
+            prev_line_num = line_num;
+            continue;
         }
-        for ((x1, x2), lines_count) in pointers.iter().zip(prev_lens.iter()) {
-
+        for (&(x1, x2), &lines_count) in pointers.iter().zip(prev_lens.iter()) {
+            
         }
-        for (x1, x2) in line.clone() {
-            let found_matches = pointers.iter().filter(|l|  (**l).0 == *x1 || (**l).1 == *x2).collect::<Vec<_>>();
+        for (x1, x2) in (*line).clone() {
+            let found_matches = pointers.iter().enumerate().filter(|(_, &l)|  l.0 == x1 || l.1 == x2).collect::<Vec<_>>();
             match found_matches.len() {
                 2 => todo!(),
                 1 => todo!(),
-                0 => todo!(),
+                0 => {
+                    pointers.push((x1, x2));
+                    prev_lens.push(x2 - x1 + 1);
+                    counter += x2 - x1 + 1 //no need for abs, it's ordered properly
+                },
                 _ => unreachable!()
             }
         }
+        prev_line_num = line_num
     }
 
     return counter;

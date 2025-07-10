@@ -85,9 +85,8 @@ fn part1(lines: &Vec::<String>) -> i32 {
             nums.push(sum.parse::<i32>().unwrap());
         }
     }
-    let sum = nums.iter().sum::<i32>();
     
-    return sum
+    nums.iter().sum()
 }
 
 // one, two, three, four, five, six, seven, eight, nine
@@ -138,11 +137,6 @@ fn part2(lines: &Vec::<String>) -> i32 {
         let sum = first + &last;
         sums.push(sum);
     }
-    let mut nums = Vec::new();
-    for sum in sums {
-        nums.push(sum.parse::<i32>().unwrap());
-    }
-    let sum = nums.iter().sum::<i32>();
     
-    return sum
+    sums.iter().map(|s| s.parse::<i32>().expect(format!("Incorrect integer value: {}", s).as_str())).sum()
 }

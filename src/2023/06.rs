@@ -60,37 +60,43 @@ fn main() {
 }
 
 fn part1(lines: &Vec::<String>) -> u128 {
-    let mut power = 1;
+    let power = 1;
     let mut counts = Vec::new();
 
-    let times = lines[0].split_ascii_whitespace().collect::<Vec<_>>()[1..].iter().map(|s| s.parse::<u128>().unwrap()).collect::<Vec<_>>();
-    let distances = lines[1].split_ascii_whitespace().collect::<Vec<_>>()[1..].iter().map(|s| s.parse::<u128>().unwrap()).collect::<Vec<_>>();
+    let times = lines[0].split_ascii_whitespace()
+        .skip(1)
+        .map(|s| s.parse::<u128>().unwrap());
+    let distances = lines[1].split_ascii_whitespace()
+        .skip(1)
+        .map(|s| s.parse::<u128>().unwrap());
     
-    let zip = times.iter().zip(distances.iter());
+    let zip = times.zip(distances);
     
     for (time, distance) in zip {
-        let mut vec = Vec::with_capacity(*time as usize);
+        let mut vec = Vec::with_capacity(time as usize);
 
-        for delay in 1..*time {
-            let val = delay * (*time - delay);
+        for delay in 1..time {
+            let val = delay * (time - delay);
             vec.push(val)
         }
 
-        vec = vec.iter().filter(|res| *res > distance).copied().collect::<Vec<_>>();
+        vec = vec.iter().filter(|res| **res > distance).copied().collect::<Vec<_>>();
         counts.push(len!(vec) as u128);
     }
 
-    counts.iter().for_each(|count| {
-        power *= count;
-    });
-
-    return power;
+    counts.iter().fold(power, |cur_power, count| {
+        cur_power * count
+    })
 }
 
 fn part2(lines: &Vec::<String>) -> u128 {
     let mut newlines = lines.clone();
-    newlines[0] = "Time: ".to_owned() + &newlines[0].split_ascii_whitespace().collect::<Vec<_>>()[1..].to_vec().join("");
-    newlines[1] = "Distance: ".to_owned() + &newlines[1].split_ascii_whitespace().collect::<Vec<_>>()[1..].to_vec().join("");
+    newlines[0] = "Time: ".to_owned() + &newlines[0].split_ascii_whitespace()
+        .collect::<Vec<_>>()[1..].to_vec() // Somehow faster than using .skip(1) on the iter
+        .join("");
+    newlines[1] = "Distance: ".to_owned() + &newlines[1].split_ascii_whitespace()
+        .collect::<Vec<_>>()[1..].to_vec()
+        .join("");
     println!("{}", newlines[0]);
     println!("{}", newlines[1]);
     return part1(&newlines);

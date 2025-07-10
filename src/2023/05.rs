@@ -222,7 +222,7 @@ fn part2(lines: &Vec<String>) -> u64 {
                     let mut num_of_iters: u64 = 0;
                     return (seed_range
                         .map(|seed| {
-                            let mut current_val = seed.clone();
+                            let mut current_val = seed;
                             //print!("{current_val}");
                             for mapset in &mappings {
                                 let mut found = false;

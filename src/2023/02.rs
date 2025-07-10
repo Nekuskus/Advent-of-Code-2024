@@ -62,7 +62,11 @@ fn part1(lines: &Vec::<String>) -> i32 {
     for i in 0..lines.len() {
         let line_id = i as i32 + 1;
         let mut line_record: HashMap<String, i32> = HashMap::new();
-        let line_of_balls = lines[i].split(' ').map(String::from).collect::<Vec<String>>()[2..].join(" ");
+        let line_of_balls = lines[i]
+            .split(' ')
+            .skip(2)
+            .collect::<Vec<_>>()
+            .join(" ");
         let replaced_line = line_of_balls.replace(";", &",");
         let arr_of_balls = replaced_line.split(",").map(|s| s.trim().split(' ')).map(|spl| spl.collect::<Vec<&str>>()).collect::<Vec<Vec<&str>>>();
         for arr in arr_of_balls {
@@ -75,9 +79,9 @@ fn part1(lines: &Vec::<String>) -> i32 {
                 *line_record.get_mut(color).unwrap() = amount;
             }
         }
-        if  line_record.get("red").unwrap_or(&99) <= &12
-            && line_record.get("green").unwrap_or(&99) <= &13 
-            && line_record.get("blue").unwrap_or(&99) <= &14  {
+        if  line_record.get("red").unwrap_or(&0) <= &12
+            && line_record.get("green").unwrap_or(&0) <= &13 
+            && line_record.get("blue").unwrap_or(&0) <= &14  {
             //println!("id: {}, red: {}, green: {}, blue: {}", line_id, line_record.get("red").unwrap(), line_record.get("green").unwrap(), line_record.get("blue").unwrap());
             sum_of_ids += line_id;
         }
@@ -90,7 +94,11 @@ fn part2(lines: &Vec::<String>) -> i32 {
     for i in 0..lines.len() {
         //let line_id = i as i32 + 1;
         let mut line_record: HashMap<String, i32> = HashMap::new();
-        let line_of_balls = lines[i].split(' ').map(String::from).collect::<Vec<String>>()[2..].join(" ");
+        let line_of_balls = lines[i]
+            .split(' ')
+            .skip(2)
+            .collect::<Vec<_>>()
+            .join(" ");
         let replaced_line = line_of_balls.replace(";", &",");
         let arr_of_balls = replaced_line.split(",").map(|s| s.trim().split(' ')).map(|spl| spl.collect::<Vec<&str>>()).collect::<Vec<Vec<&str>>>();
         for arr in arr_of_balls {
@@ -103,7 +111,7 @@ fn part2(lines: &Vec::<String>) -> i32 {
                 *line_record.get_mut(color).unwrap() = amount;
             }
         }
-        let (red, blue, green) = (line_record.get("red").unwrap_or(&99), line_record.get("green").unwrap_or(&99), line_record.get("blue").unwrap_or(&99));
+        let (red, blue, green) = (line_record.get("red").unwrap_or(&0), line_record.get("green").unwrap_or(&0), line_record.get("blue").unwrap_or(&0));
         //println!("id: {}, red: {}, green: {}, blue: {}, power: {}", line_id, red, blue, green, red * blue * green);
 
         sum_of_powers += red * green * blue;
