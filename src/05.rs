@@ -28,14 +28,17 @@ impl<
         return RangeMap::new(from_range.clone(), from_range);
     }
 
+    #[inline(always)]
     pub fn contains_from(&self, value: &T) -> bool {
         return self.from.contains(value);
     }
 
+    #[inline(always)]
     pub fn contains_to(&self, value: &T) -> bool {
         return self.to.contains(value);
     }
-
+    
+    #[inline(always)]
     pub fn map(&self, value: &T) -> T {
         if !self.contains_from(value) {
             panic!(

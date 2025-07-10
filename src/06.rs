@@ -72,12 +72,7 @@ fn part1(lines: &Vec::<String>) -> u128 {
         let mut vec = Vec::with_capacity(*time as usize);
 
         for delay in 1..*time {
-            let mut i = delay.to_owned();
-            let mut val = 0;
-            while i < time.to_owned() {
-                val += &delay;
-                i += 1;
-            }
+            let val = delay * (*time - delay);
             vec.push(val)
         }
 
