@@ -1,17 +1,15 @@
-use setup_utils::*;
-use std::path::Path;
+use utils::*;
 
 // Symbols to replace: 11 374 8410 9623138 726820169514
 
 
 #[cfg(test)]
 mod tests {
-    use setup_utils::read_lines;
-    use std::path::Path;
+    use utils::get_input;
 
     #[test]
     fn part1() -> Result<(), String> {
-        let lines = read_lines(Path::new("./inputs/11-example.txt"));
+        let lines = get_input!("11-example.txt");
         let result = crate::part1(&lines);
         if result == 374 {
             Ok(())
@@ -22,7 +20,7 @@ mod tests {
     
     #[test]
     fn part2() -> Result<(), String> {
-        let lines = read_lines(Path::new("./inputs/11-example.txt"));
+        let lines = get_input!("11-example.txt");
         let result = crate::part2(&lines, 100);
         if result == 8410 {
             Ok(())
@@ -33,7 +31,7 @@ mod tests {
 
     #[test]
     fn full() -> Result<(), String> {
-        let lines = read_lines(Path::new("./inputs/11-full.txt"));
+        let lines = get_input!("11-full.txt");
         let result1 = crate::part1(&lines);
         let result2 = crate::part2(&lines, 1000000);
 
@@ -48,8 +46,8 @@ mod tests {
 }
 
 fn main() {
-    let linesfull = read_lines(Path::new("./inputs/11-full.txt"));
-    let lines1 = read_lines(Path::new("./inputs/11-1-example.txt"));
+    let linesfull = get_input!("11-full.txt");
+    let lines1 = get_input!("11-example.txt");
 
     println!("11-full.txt");
     println!("{}", part1(&linesfull));

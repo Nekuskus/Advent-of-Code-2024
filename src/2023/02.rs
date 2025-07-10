@@ -1,16 +1,14 @@
-use setup_utils::read_lines;
-use std::path::Path;
+use utils::get_input;
 use std::collections::HashMap;
 
 
 #[cfg(test)]
 mod tests {
-    use setup_utils::read_lines;
-    use std::path::Path;
+    use utils::get_input;
 
     #[test]
     fn part1() -> Result<(), String> {
-        let lines = read_lines(Path::new("./inputs/02-example.txt"));
+        let lines = get_input!("02-example.txt");
         let result = crate::part1(&lines);
         if result == 8 {
             Ok(())
@@ -21,7 +19,7 @@ mod tests {
     
     #[test]
     fn part2() -> Result<(), String> {
-        let lines = read_lines(Path::new("./inputs/02-example.txt"));
+        let lines = get_input!("02-example.txt");
         let result = crate::part2(&lines);
         if result == 2286 {
             Ok(())
@@ -32,7 +30,7 @@ mod tests {
 
     #[test]
     fn full() -> Result<(), String> {
-        let lines = read_lines(Path::new("./inputs/02-full.txt"));
+        let lines = get_input!("02-full.txt");
         let result1 = crate::part1(&lines);
         let result2 = crate::part2(&lines);
         match (result1, result2) {
@@ -45,8 +43,8 @@ mod tests {
 }
 
 fn main() {
-    let linesfull = read_lines(Path::new("./inputs/02-full.txt"));
-    let lines1and2 = read_lines(Path::new("./inputs/02-example.txt"));
+    let linesfull = get_input!("02-full.txt");
+    let lines1and2 = get_input!("02-example.txt");
     
     println!("02-full.txt");
     println!("{}", part1(&linesfull));

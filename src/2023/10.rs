@@ -1,18 +1,16 @@
-use setup_utils::*;
-use std::path::Path;
-use debug_print::{debug_print as debug, debug_println as debugln};
+use utils::*;
+use debug_print::debug_println as debugln;
 
 // Symbols to replace: 10 8 10 6768 SOLVE2
 
 
 #[cfg(test)]
 mod tests {
-    use setup_utils::read_lines;
-    use std::path::Path;
+    use utils::get_input;
 
     #[test]
     fn part1() -> Result<(), String> {
-        let lines = read_lines(Path::new("./inputs/10-1-example.txt"));
+        let lines = get_input!("10-1-example.txt");
         let result = crate::part1(&lines);
         if result == 8 {
             Ok(())
@@ -23,7 +21,7 @@ mod tests {
     
     #[test]
     fn part2() -> Result<(), String> {
-        let lines = read_lines(Path::new("./inputs/10-2-example.txt"));
+        let lines = get_input!("10-2-example.txt");
         let result = crate::part2(&lines);
         if result == 4 {
             Ok(())
@@ -34,7 +32,7 @@ mod tests {
 
     #[test]
     fn full() -> Result<(), String> {
-        let lines = read_lines(Path::new("./inputs/10-full.txt"));
+        let lines = get_input!("10-full.txt");
         let result1 = crate::part1(&lines);
         //let result2 = crate::part2(&lines);
         
@@ -129,9 +127,9 @@ fn get_next_point(x: usize, y: usize, symbol: char, dir: EntryDirection) -> (usi
 }
 
 fn main() {
-    let linesfull = read_lines(Path::new("./inputs/10-full.txt"));
-    let lines1 = read_lines(Path::new("./inputs/10-1-example.txt"));
-    let lines2 = read_lines(Path::new("./inputs/10-2-example.txt"));
+    let linesfull = get_input!("10-full.txt");
+    let lines1 = get_input!("10-1-example.txt");
+    let lines2 = get_input!("10-2-example.txt");
 
     println!("10-full.txt");
     println!("{}", part1(&linesfull));
@@ -200,7 +198,7 @@ fn part1(lines: &Vec<String>) -> i32 {
         possible_starts.splice(idx..=idx, []);
     }
 
-    assert_eq!(len!(possible_starts), 2);
+    assert_eq!(possible_starts.len(), 2);
 
     let mut p1 = Point {x: *possible_starts[0].0 as usize, y: *possible_starts[0].1 as usize};
     let mut p1_dir = possible_starts[0].2;
@@ -288,8 +286,8 @@ fn part2(lines: &Vec<String>) -> i32 {
         possible_starts.splice(idx..=idx, []);
     }
 
-    assert_eq!(len!(possible_starts), 2);
-    assert_eq!(len!(valids), 2);
+    assert_eq!(possible_starts.len(), 2);
+    assert_eq!(valids.len(), 2);
 
     let mut p1 = Point {x: *possible_starts[0].0 as usize, y: *possible_starts[0].1 as usize};
     let mut p1_dir = possible_starts[0].2;
@@ -298,8 +296,8 @@ fn part2(lines: &Vec<String>) -> i32 {
 
     
     //  PART 2 PROPER STARTS HERE
-    let mut pipe_traced = vec![vec!['.'; len!(pipes[0])]; len!(pipes)];
-    let mut checked = vec![vec![Unset; len!(pipes[0])]; len!(pipes)];
+    let mut pipe_traced = vec![vec!['.'; pipes[0].len()]; pipes.len()];
+    let mut checked = vec![vec![Unset; pipes[0].len()]; pipes.len()];
 
     /*
         south: 3
@@ -459,17 +457,17 @@ fn part2(lines: &Vec<String>) -> i32 {
             if c != &'*' {
                 start_checking(x as i32, y as i32, &mut checked, &pipe_traced, &wormhole_starts, &wormhole_ends);
                 //debugln!("0123456789");
-                for (y,line) in checked.iter().enumerate() {
-                    for (x, val) in line.iter().enumerate() {
-                        // debug!("{}", match val {
-                        //     Inside => 'I',
-                        //     Outside => 'O',
-                        //     Unset => pipe_traced[y][x],
-                        //     Pending => panic!("Point ({x}, {y}) did not get evaluated before returning from outer checker!")
-                        // })
-                    }
-                    // debugln!();
-                }
+                // for (y,line) in checked.iter().enumerate() {
+                //     for (x, val) in line.iter().enumerate() {
+                //         // debug!("{}", match val {
+                //         //     Inside => 'I',
+                //         //     Outside => 'O',
+                //         //     Unset => pipe_traced[y][x],
+                //         //     Pending => panic!("Point ({x}, {y}) did not get evaluated before returning from outer checker!")
+                //         // })
+                //     }
+                //     // debugln!();
+                // }
                 // debugln!("------------------------------------------");
             }
         }
@@ -512,7 +510,7 @@ fn part2(lines: &Vec<String>) -> i32 {
     return inside_counter;
 }
 
-fn check_wormhole(startx: i32, starty: i32, mut entrance: Vec<char>,  pipes: &Vec<Vec<char>>, mut dir: EntryDirection, wormhole_ends: &Vec<(i32, i32)>) -> Option<((i32, i32), (i32, i32))> {
+fn check_wormhole(startx: i32, starty: i32, entrance: Vec<char>,  pipes: &Vec<Vec<char>>, mut dir: EntryDirection, wormhole_ends: &Vec<(i32, i32)>) -> Option<((i32, i32), (i32, i32))> {
     if wormhole_ends.contains(&(startx, starty)) {
         return None;
     }

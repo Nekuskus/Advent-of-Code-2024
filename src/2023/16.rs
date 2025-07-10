@@ -1,5 +1,5 @@
-use setup_utils::*;
-use std::{path::Path, collections::HashSet};
+use utils::*;
+use std::collections::HashSet;
 use debug_print::debug_println as debugln;
 
 // Symbols to replace: 16 46 51 7498 7846
@@ -7,12 +7,11 @@ use debug_print::debug_println as debugln;
 
 #[cfg(test)]
 mod tests {
-    use setup_utils::read_lines;
-    use std::path::Path;
+    use utils::get_input;
 
     #[test]
     fn part1() -> Result<(), String> {
-        let lines = read_lines(Path::new("./inputs/16-example.txt"));
+        let lines = get_input!("16-example.txt");
         let result = crate::part1(&lines);
         if result == 46 {
             Ok(())
@@ -23,7 +22,7 @@ mod tests {
 
     #[test]
     fn part2() -> Result<(), String> {
-        let lines = read_lines(Path::new("./inputs/16-example.txt"));
+        let lines = get_input!("16-example.txt");
         let result = crate::part2(&lines);
         if result == 51 {
             Ok(())
@@ -34,7 +33,7 @@ mod tests {
 
     #[test]
     fn full() -> Result<(), String> {
-        let lines = read_lines(Path::new("./inputs/16-full.txt"));
+        let lines = get_input!("16-full.txt");
         let result1 = crate::part1(&lines);
         let result2 = crate::part2(&lines);
 
@@ -48,8 +47,8 @@ mod tests {
 }
 
 fn main() {
-    let linesfull = read_lines(Path::new("./inputs/16-full.txt"));
-    let lines1 = read_lines(Path::new("./inputs/16-example.txt"));
+    let linesfull = get_input!("16-full.txt");
+    let lines1 = get_input!("16-example.txt");
 
     println!("16-full.txt");
     println!("{}", part1(&linesfull));

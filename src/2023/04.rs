@@ -1,15 +1,13 @@
-use setup_utils::{len, read_lines};
+use utils::get_input;
 use std::collections::HashSet;
-use std::path::Path;
 
 #[cfg(test)]
 mod tests {
-    use setup_utils::read_lines;
-    use std::path::Path;
+    use utils::get_input;
 
     #[test]
     fn part1() -> Result<(), String> {
-        let lines = read_lines(Path::new("./inputs/04-example.txt"));
+        let lines = get_input!("04-example.txt");
         let result = crate::part1(&lines);
         if result == 13 {
             Ok(())
@@ -23,7 +21,7 @@ mod tests {
 
     #[test]
     fn part2() -> Result<(), String> {
-        let lines = read_lines(Path::new("./inputs/04-example.txt"));
+        let lines = get_input!("04-example.txt");
         let result = crate::part2(&lines);
         if result == 30 {
             Ok(())
@@ -37,7 +35,7 @@ mod tests {
 
     #[test]
     fn full() -> Result<(), String> {
-        let lines = read_lines(Path::new("./inputs/04-full.txt"));
+        let lines = get_input!("04-full.txt");
         let result1 = crate::part1(&lines);
         let result2 = crate::part2(&lines);
         match (result1, result2) {
@@ -59,8 +57,8 @@ mod tests {
 }
 
 fn main() {
-    let linesfull = read_lines(Path::new("./inputs/04-full.txt"));
-    let lines1 = read_lines(Path::new("./inputs/04-example.txt"));
+    let linesfull = get_input!("04-full.txt");
+    let lines1 = get_input!("04-example.txt");
 
     println!("04-full.txt");
     println!("{}", part1(&linesfull));
@@ -89,8 +87,8 @@ fn part1(lines: &Vec<String>) -> i32 {
             .map(|s| s.parse::<i32>().expect(&format!("bad int error num={}", s)))
             .collect::<HashSet<_>>();
         let found = &winning & &scratched;
-        if len!(found) > 0 {
-            let score = 2_i32.pow(len!(found) as u32 - 1);
+        if found.len() > 0 {
+            let score = 2_i32.pow(found.len() as u32 - 1);
             sum_of_points += score;
         }
     }
@@ -121,11 +119,11 @@ fn part2(lines: &Vec<String>) -> i32 {
             .map(|s| s.parse::<i32>().expect(&format!("bad int error num={}", s)))
             .collect::<HashSet<_>>();
         let found = &winning & &scratched;
-        return (game_id - 1, len!(found));
+        return (game_id - 1, found.len());
     }).collect::<Vec<_>>();
 
     let mut queue = lines_parsed.clone();
-    while len!(queue) > 0 {
+    while queue.len() > 0 {
         let line = queue.pop().unwrap();
         total_count += 1;
         if line.1 > 0 {

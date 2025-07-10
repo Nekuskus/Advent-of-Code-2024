@@ -1,17 +1,16 @@
-use setup_utils::*;
-use std::{path::Path, collections::HashMap};
+use utils::*;
+use std::collections::HashMap;
 
 // Symbols to replace: 08 6 6 17621 20685524831999
 
 
 #[cfg(test)]
 mod tests {
-    use setup_utils::read_lines;
-    use std::path::Path;
+    use utils::get_input;
 
     #[test]
     fn part1() -> Result<(), String> {
-        let lines = read_lines(Path::new("./inputs/08-1-example.txt"));
+        let lines = get_input!("08-1-example.txt");
         let result = crate::part1(&lines);
         if result == 2 {
             Ok(())
@@ -22,7 +21,7 @@ mod tests {
     
     #[test]
     fn part2() -> Result<(), String> {
-        let lines = read_lines(Path::new("./inputs/08-2-example.txt"));
+        let lines = get_input!("08-2-example.txt");
         let result = crate::part2(&lines);
         if result == 6 {
             Ok(())
@@ -33,7 +32,7 @@ mod tests {
     
     #[test]
     fn full() -> Result<(), String> {
-        let lines = read_lines(Path::new("./inputs/08-full.txt"));
+        let lines = get_input!("08-full.txt");
         let result1 = crate::part1(&lines);
         let result2 = crate::part2(&lines);
         
@@ -47,9 +46,9 @@ mod tests {
 }
 
 fn main() {
-    let linesfull = read_lines(Path::new("./inputs/08-full.txt"));
-    let lines1 = read_lines(Path::new("./inputs/08-1-example.txt"));
-    let lines2 = read_lines(Path::new("./inputs/08-2-example.txt"));
+    let linesfull = get_input!("08-full.txt");
+    let lines1 = get_input!("08-1-example.txt");
+    let lines2 = get_input!("08-2-example.txt");
 
     println!("08-full.txt");
     println!("{}", part1(&linesfull));
@@ -104,7 +103,7 @@ fn part1(lines: &Vec::<String>) -> i32 {
 }
 
 fn lcm(nums: &Vec<i128>) -> i128 {
-    if len!(nums) == 1 {
+    if nums.len() == 1 {
         return nums[0]
     }
     let a = nums[0];
@@ -138,8 +137,8 @@ fn part2(lines: &Vec::<String>) -> i128 {
     
     let mut total_steps = 0;
     let mut curnodes = nodes.iter().filter(|n| n.1.name.ends_with("A")).map(|n| n.1.clone()).collect::<Vec<_>>();
-    let mut cycles = [-1].repeat(len!(curnodes));
-    //println!("len: {}", len!(cycles));
+    let mut cycles = [-1].repeat(curnodes.len());
+    //println!("len: {}", cycles.len());
     while !cycles.iter().all(|num| num != &-1) {
         //println!("{curnodes:#?}");
         let next_step = steps.next().unwrap();

@@ -1,17 +1,15 @@
-use setup_utils::*;
-use std::path::Path;
+use utils::*;
 
 // Symbols to replace: 06 288 71503 2449062 33149631
 
 
 #[cfg(test)]
 mod tests {
-    use setup_utils::read_lines;
-    use std::path::Path;
+    use utils::get_input;
 
     #[test]
     fn part1() -> Result<(), String> {
-        let lines = read_lines(Path::new("./inputs/06-example.txt"));
+        let lines = get_input!("06-example.txt");
         let result = crate::part1(&lines);
         if result == 288 {
             Ok(())
@@ -22,7 +20,7 @@ mod tests {
     
     #[test]
     fn part2() -> Result<(), String> {
-        let lines = read_lines(Path::new("./inputs/06-example.txt"));
+        let lines = get_input!("06-example.txt");
         let result = crate::part2(&lines);
         if result == 71503 {
             Ok(())
@@ -33,7 +31,7 @@ mod tests {
 
     #[test]
     fn full() -> Result<(), String> {
-        let lines = read_lines(Path::new("./inputs/06-full.txt"));
+        let lines = get_input!("06-full.txt");
         let result1 = crate::part1(&lines);
         let result2 = crate::part2(&lines);
 
@@ -47,8 +45,8 @@ mod tests {
 }
 
 fn main() {
-    let linesfull = read_lines(Path::new("./inputs/06-full.txt"));
-    let lines1 = read_lines(Path::new("./inputs/06-example.txt"));
+    let linesfull = get_input!("06-full.txt");
+    let lines1 = get_input!("06-example.txt");
 
     println!("06-full.txt");
     println!("{}", part1(&linesfull));
@@ -81,7 +79,7 @@ fn part1(lines: &Vec::<String>) -> u128 {
         }
 
         vec = vec.iter().filter(|res| **res > distance).copied().collect::<Vec<_>>();
-        counts.push(len!(vec) as u128);
+        counts.push(vec.len() as u128);
     }
 
     counts.iter().fold(power, |cur_power, count| {

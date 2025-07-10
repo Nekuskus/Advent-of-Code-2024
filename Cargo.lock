@@ -3,11 +3,12 @@
 version = 4
 
 [[package]]
-name = "Advent-of-Code-2024"
+name = "Advent-of-Code"
 version = "0.1.0"
 dependencies = [
  "debug_print",
- "itertools 0.13.0",
+ "itertools",
+ "lazy_static",
  "regex",
  "utils-lib",
 ]
@@ -35,21 +36,18 @@ checksum = "60b1af1c220855b6ceac025d3f6ecdd2b7c4894bfe9cd9bda4fbb4bc7c0d4cf0"
 
 [[package]]
 name = "itertools"
-version = "0.13.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "413ee7dfc52ee1a4949ceeb7dbc8a33f2d6c088194d9f922fb8318faf1f01186"
-dependencies = [
- "either",
-]
-
-[[package]]
-name = "itertools"
 version = "0.14.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2b192c782037fadd9cfa75548310488aabdbf3d2da73885b31bd0abd03351285"
 dependencies = [
  "either",
 ]
+
+[[package]]
+name = "lazy_static"
+version = "1.5.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "bbd2bcb4c963f2ddae06a2efc7e9f3591312473c50c6685e1f298068316e66fe"
 
 [[package]]
 name = "macro-lib"
@@ -94,6 +92,6 @@ checksum = "2b15c43186be67a4fd63bee50d0303afffcef381492ebe2c5d87f324e1b8815c"
 name = "utils-lib"
 version = "0.1.0"
 dependencies = [
- "itertools 0.14.0",
+ "itertools",
  "macro-lib",
 ]

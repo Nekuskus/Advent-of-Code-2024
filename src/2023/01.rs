@@ -1,14 +1,12 @@
-use setup_utils::read_lines;
-use std::path::Path;
+use utils::get_input;
 
 #[cfg(test)]
 mod tests {
-    use setup_utils::read_lines;
-    use std::path::Path;
+    use utils::get_input;
 
     #[test]
     fn part1() -> Result<(), String> {
-        let lines = read_lines(Path::new("./inputs/01-1-example.txt"));
+        let lines = get_input!("01-1-example.txt");
         let result = crate::part1(&lines);
         if result == 142 {
             Ok(())
@@ -19,7 +17,7 @@ mod tests {
 
     #[test]
     fn part2() -> Result<(), String> {
-        let lines = read_lines(Path::new("./inputs/01-2-example.txt"));
+        let lines = get_input!("01-2-example.txt");
         let result = crate::part2(&lines);
         if result == 281 {
             Ok(())
@@ -27,10 +25,10 @@ mod tests {
             Err(format!("01: Bad result for Part 2 example, expected 281 got {}", result))
         }
     }
-
+    
     #[test]
     fn full() -> Result<(), String> {
-        let lines = read_lines(Path::new("./inputs/01-full.txt"));
+        let lines = get_input!("01-full.txt");
         let result1 = crate::part1(&lines);
         let result2 = crate::part2(&lines);
         match (result1, result2) {
@@ -43,9 +41,9 @@ mod tests {
 }
 
 fn main() {
-    let linesfull = read_lines(Path::new("./inputs/01-full.txt"));
-    let lines1 = read_lines(Path::new("./inputs/01-1-example.txt"));
-    let lines2 = read_lines(Path::new("./inputs/01-2-example.txt"));
+    let linesfull = get_input!("01-full.txt");
+    let lines1 = get_input!("01-1-example.txt");
+    let lines2 = get_input!("01-2-example.txt");
 
     println!("01-full.txt");
     println!("{}", part1(&linesfull));

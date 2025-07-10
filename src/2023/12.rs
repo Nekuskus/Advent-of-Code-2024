@@ -1,17 +1,15 @@
-use setup_utils::*;
-use std::path::Path;
+use utils::*;
 
 // Symbols to replace: 12 21 525152 7922 SOLVE2
 
 
 #[cfg(test)]
 mod tests {
-    use setup_utils::read_lines;
-    use std::path::Path;
+    use utils::get_input;
 
     #[test]
     fn part1() -> Result<(), String> {
-        let lines = read_lines(Path::new("./inputs/12-example.txt"));
+        let lines = get_input!("12-example.txt");
         let result = crate::part1(&lines);
         if result == 21 {
             Ok(())
@@ -22,7 +20,7 @@ mod tests {
     /*
     #[test]
     fn part2() -> Result<(), String> {
-        let lines = read_lines(Path::new("./inputs/12-example.txt"));
+        let lines = get_input!("12-example.txt");
         let result = crate::part2(&lines);
         if result == 525152 {
             Ok(())
@@ -33,7 +31,7 @@ mod tests {
     */
     #[test]
     fn full() -> Result<(), String> {
-        let lines = read_lines(Path::new("./inputs/12-full.txt"));
+        let lines = get_input!("12-full.txt");
         let result1 = crate::part1(&lines);
         //let result2 = crate::part2(&lines);
         
@@ -54,9 +52,9 @@ mod tests {
 }
 
 fn main() {
-    let linesfull = read_lines(Path::new("./inputs/12-full.txt"));
-    let lines1 = read_lines(Path::new("./inputs/12-1-example.txt"));
-    //let lines2 = read_lines(Path::new("./inputs/12-2-example.txt"));
+    let linesfull = get_input!("12-full.txt");
+    let lines1 = get_input!("12-example.txt");
+    //let lines2 = get_input!("12-2-example.txt");
 
     println!("12-full.txt");
     println!("{}", part1(&linesfull));
@@ -80,7 +78,7 @@ fn get_next_permutation(line: &String, pat: &String) -> Option<String> {
         return None;
     }
 
-    let marked_indices = pat.chars().enumerate().filter(|(idx, c)| c == &'?').map(|(idx, c)| idx).collect::<Vec<usize>>();
+    let marked_indices = pat.chars().enumerate().filter(|(_, c)| c == &'?').map(|(idx, _)| idx).collect::<Vec<usize>>();
 
     let mut first_broken = usize::MAX;
     let mut first_working = usize::MAX;
@@ -124,7 +122,7 @@ fn part1(lines: &Vec<String>) -> u128 {
     }).collect::<Vec<_>>();
 
     let mut count = 0;
-    for (i, (line, criteria)) in parsed.iter().enumerate() {
+    for (_i, (line, criteria)) in parsed.iter().enumerate() {
         //println!("i = {i}, {criteria:?}");
         let pat = line.to_string();
         //println!("{pat}");

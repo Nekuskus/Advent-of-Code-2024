@@ -1,14 +1,12 @@
-use setup_utils::{len, read_lines, pad_lines};
-use std::path::Path;
+use utils::{get_input, pad_lines};
 
 #[cfg(test)]
 mod tests {
-    use setup_utils::read_lines;
-    use std::path::Path;
+    use utils::get_input;
 
     #[test]
     fn part1() -> Result<(), String> {
-        let lines = read_lines(Path::new("./inputs/03-example.txt"));
+        let lines = get_input!("03-example.txt");
         let result = crate::part1(&lines);
         if result == 4361 {
             Ok(())
@@ -22,7 +20,7 @@ mod tests {
 
     #[test]
     fn part2() -> Result<(), String> {
-        let lines = read_lines(Path::new("./inputs/03-example.txt"));
+        let lines = get_input!("03-example.txt");
         let result = crate::part2(&lines);
         if result == 467835 {
             Ok(())
@@ -36,7 +34,7 @@ mod tests {
 
     #[test]
     fn full() -> Result<(), String> {
-        let lines = read_lines(Path::new("./inputs/03-full.txt"));
+        let lines = get_input!("03-full.txt");
         let result1 = crate::part1(&lines);
         let result2 = crate::part2(&lines);
         match (result1, result2) {
@@ -58,8 +56,8 @@ mod tests {
 }
 
 fn main() {
-    let linesfull = read_lines(Path::new("./inputs/03-full.txt"));
-    let lines1 = read_lines(Path::new("./inputs/03-example.txt"));
+    let linesfull = get_input!("03-full.txt");
+    let lines1 = get_input!("03-example.txt");
 
     println!("03-full.txt");
     println!("{}", part1(&linesfull));
@@ -78,8 +76,8 @@ fn part1(lines: &Vec<String>) -> i32 {
     let mut cur_num = String::from("");
     let mut cur_is_valid = false;
 
-    for y in 0..len!(lines) {
-        for x in 0..len!(lines[y]) {
+    for y in 0..lines.len() {
+        for x in 0..lines[y].len() {
             if x == 0 {
                 // handle line break while parsing number! as in, stop parsing and dump the result
                 if cur_parsing {
@@ -103,8 +101,8 @@ fn part1(lines: &Vec<String>) -> i32 {
                 cur_parsing = true;
                 cur_num += &c.to_string();
 
-                let rangey = 0..len!(lines) as i32;
-                let rangex = 0..len!(lines[y]) as i32;
+                let rangey = 0..lines.len() as i32;
+                let rangex = 0..lines[y].len() as i32;
 
                 if rangey.contains(&(y as i32 - 1)) {
                     let line_prev = lines[y - 1].chars().collect::<Vec<char>>();
@@ -183,7 +181,7 @@ fn parse_num_from(line: &Vec<char>, x: usize) -> i32 {
     }
     //println!("{}", &line[found_start]);
 
-    while found_start != len!(line) && line[found_start].is_digit(10) {
+    while found_start != line.len() && line[found_start].is_digit(10) {
         cur_num += &line[found_start].to_string();
         found_start += 1;
     }
@@ -201,8 +199,8 @@ fn part2(lines: &Vec<String>) -> i32 {
     let mut sum_of_nums = 0;
     let mut lastnum = -1;
 
-    for y in 0..len!(padded) {
-        for x in 0..len!(padded[y]) {
+    for y in 0..padded.len() {
+        for x in 0..padded[y].len() {
             let line = padded[y].chars().collect::<Vec<char>>();
             let c = line[x];
 
@@ -276,7 +274,7 @@ fn part2(lines: &Vec<String>) -> i32 {
                 }
 
                 //println!("cursum: {}, oper1: {}, oper2: {}",sum_of_nums, oper1, oper2);
-                if len!(found_numbers) == 2 {
+                if found_numbers.len() == 2 {
                     //println!("in if -- cursum: {}, oper1: {}, oper2: {}",sum_of_nums, oper1, oper2);
                     sum_of_nums += found_numbers[0] * found_numbers[1];
                 }
