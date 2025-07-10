@@ -2,7 +2,7 @@ use setup_utils::*;
 use std::path::Path;
 use debug_print::{debug_print as debug, debug_println as debugln};
 
-// Symbols to replace: 13 405 400 30802 SOLVE2
+// Symbols to replace: 13 405 400 30802 37876
 
 
 #[cfg(test)]
@@ -36,20 +36,14 @@ mod tests {
     fn full() -> Result<(), String> {
         let lines = read_lines(Path::new("./inputs/13-full.txt"));
         let result1 = crate::part1(&lines);
-        //let result2 = crate::part2(&lines);
-        
-        if result1 == 30802 {
-            Ok(())
-        } else {
-            Err(format!("13: Bad result for Part 1, expected 30802 got {}", result1))
-        }
-        /*
+        let result2 = crate::part2(&lines);
+
         match (result1, result2) {
-            (30802, SOLVE2) => Ok(()),
-            (_, SOLVE2) => Err(format!("13: Bad result for Part 1, expected 30802 got {}", result1)),
-            (30802, _) => Err(format!("13: Bad result for Part 2, expected SOLVE2 got {}", result2)),
-            (_, _) => Err(format!("13: Bad result for Part 1 & 2, expected (30802, SOLVE2) got ({}, {})", result1, result2))
-        }*/
+            (30802, 37876) => Ok(()),
+            (_, 37876) => Err(format!("13: Bad result for Part 1, expected 30802 got {}", result1)),
+            (30802, _) => Err(format!("13: Bad result for Part 2, expected 37876 got {}", result2)),
+            (_, _) => Err(format!("13: Bad result for Part 1 & 2, expected (30802, 37876) got ({}, {})", result1, result2))
+        }
     }
 }
 
@@ -114,7 +108,7 @@ fn part1(lines: &Vec<String>) -> i32 {
                         found_mirror = true;
                         debugln!("Section {i}, found at x: {}|{}", x+1, x+2);
                         debugln!("diff: {diff_from_line}");
-                        cumsum += (x + 1);
+                        cumsum += x + 1;
                         break;
                     }
                 }
@@ -136,7 +130,13 @@ fn part2(lines: &Vec<String>) -> i32 {
         let mut found_smudge = false;
         let mut found_mirror = false;
         for y in 0..section.len() - 1 {
-            if section[y] == section[y + 1] { // TODO: REDO THIS CHECK TO ALLOW SMUDGES, WILL WORK FINE AFTERWARDS
+            let both_y: Vec<(char, char)> = section[y].iter().zip(section[y+1].iter()).map(|(&left, &right)| (left, right)).collect();
+            let inequalities_y = both_y.iter().fold(0, |acc, (left, right)| acc + if left == right { 0 } else { 1 });
+            if match inequalities_y {
+                0 => true,
+                1 => if !found_smudge { found_smudge = true; true } else { false }
+                _ => false,
+            } {
                 let diff_from_line = match () {
                     _ if y + 1 > section.len() / 2 => section.len() - (y + 2),
                     _ => y// if y <= section.len() / 2
@@ -144,7 +144,7 @@ fn part2(lines: &Vec<String>) -> i32 {
 
                 if (1..=diff_from_line).into_iter().all(|offset| {
                     let both_sides: Vec<(char, char)> = section[y-offset].iter().zip(section[y+1+offset].iter()).map(|(&left, &right)| (left, right)).collect();
-                    let inequalities = both_sides.iter().fold(0, |acc, (left, right)| acc + if left == right { 0 } else { 1 });    
+                    let inequalities = both_sides.iter().fold(0, |acc, (left, right)| acc + if left == right { 0 } else { 1 });
                     if inequalities == 0 {
                         true
                     } else if inequalities == 1 {
@@ -174,8 +174,14 @@ fn part2(lines: &Vec<String>) -> i32 {
         }
         if !found_mirror {
             for x in 0..section[0].len() - 1 {
-                if section.iter().all(|vec_char| vec_char[x] == vec_char[x+1]) { // TODO: REDO THIS CHECK TO ALLOW SMUDGES, WILL WORK FINE AFTERWARDS
-                    let diff_from_line = match () {
+                let both_x: Vec<(char, char)> = section.iter().map(|vec_char| (vec_char[x], vec_char[x+1])).collect();
+                let inequalities_x = both_x.iter().fold(0, |acc, (left, right)| acc + if left == right { 0 } else { 1 });
+                if match inequalities_x {
+                    0 => true,
+                    1 => if !found_smudge { found_smudge = true; true } else { false }
+                    _ => false,
+                } {
+                    let diff_from_line: usize = match () {
                         _ if x + 1 > section[0].len() / 2 => section[0].len() - (x + 2),
                         _ => x// if y <= section.len() / 2
                     };
@@ -207,7 +213,7 @@ fn part2(lines: &Vec<String>) -> i32 {
                             found_mirror = true;
                             debugln!("Section {i}, found at x: {}|{}", x+1, x+2);
                             debugln!("diff: {diff_from_line}");
-                            cumsum += (x + 1);
+                            cumsum += x + 1;
                             break;   
                         }
                     } else {
