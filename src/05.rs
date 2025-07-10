@@ -222,7 +222,8 @@ fn part2(lines: &Vec<String>) -> u64 {
         let join_vec = seed_ranges
             .map(|seed_range| {
                 s.spawn(|| {
-                    return seed_range
+                    let mut num_of_iters: i128 = 0;
+                    return (seed_range
                         .map(|seed| {
                             let mut current_val = seed.clone();
                             //print!("{current_val}");
@@ -245,20 +246,24 @@ fn part2(lines: &Vec<String>) -> u64 {
                                 }
                                 current_val = mapped;
                                 //print!(" -> {current_val}");
+                                num_of_iters += 1;
                             }
                             //println!("");
                             current_val
                         })
                         .min()
-                        .unwrap();
+                        .unwrap(), num_of_iters);
                 })
             })
             .collect::<Vec<_>>();
+        let mut _i = 0;
         for jh in join_vec {
             let val = jh.join().unwrap();
-            if val < lowest {
-                lowest = val;
+            if val.0 < lowest {
+                lowest = val.0;
             }
+            //println!("Thread {i} returned, count of iterations performed: {}", val.1);
+            _i += 1;
         }
     });
     //println!("{result:?}");
