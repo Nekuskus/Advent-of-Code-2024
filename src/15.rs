@@ -1,6 +1,6 @@
 use setup_utils::*;
 use std::{path::Path, collections::HashMap};
-use debug_print::{debug_print as debug, debug_println as debugln};
+
 
 // Symbols to replace: 15 1320 145 514639 279470
 
@@ -94,7 +94,7 @@ fn part2(lines: &Vec<String>) -> u32 {
         
         match oper {
             '-' => {
-                let mut cur_box = match boxes.get_mut(&hash) {
+                let cur_box = match boxes.get_mut(&hash) {
                     Some(box_found) => box_found,
                     None => { continue; }
                 };
@@ -106,11 +106,11 @@ fn part2(lines: &Vec<String>) -> u32 {
             }
             '=' => {
                 let focal_length = chars.next().unwrap().to_string().parse::<u32>().unwrap();
-                let mut cur_box = match boxes.get_mut(&hash) {
+                let cur_box = match boxes.get_mut(&hash) {
                     Some(box_found) => box_found,
                     None => { boxes.insert(hash, vec![(label, focal_length)]); continue; }
                 };
-                match cur_box.iter().position(|(label_inner, focal_length)| label_inner == &label) {
+                match cur_box.iter().position(|(label_inner, _focal_length)| label_inner == &label) {
                     Some(n) => { cur_box[n].1 = focal_length},
                     None => { cur_box.push((label, focal_length)); }
                 };
@@ -119,5 +119,5 @@ fn part2(lines: &Vec<String>) -> u32 {
         }
     }
     //println!("{boxes:?}");
-    boxes.iter().map(|(hash, contents)| contents.iter().enumerate().map(|(index, (label, focal_length))| (hash + 1) * (index as u32 + 1) * focal_length).sum::<u32>()).sum()
+    boxes.iter().map(|(hash, contents)| contents.iter().enumerate().map(|(index, (_label, focal_length))| (hash + 1) * (index as u32 + 1) * focal_length).sum::<u32>()).sum()
 }

@@ -1,6 +1,6 @@
 use setup_utils::*;
 use std::path::Path;
-use debug_print::{debug_print as debug, debug_println as debugln};
+use debug_print::debug_println as debugln;
 
 // Symbols to replace: 13 405 400 30802 37876
 

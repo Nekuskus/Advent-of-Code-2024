@@ -1,10 +1,7 @@
-use debug_print::{debug_print as debug, debug_println as debugln};
 use setup_utils::*;
-use std::{path::Path, collections::HashSet};
+use std::path::Path;
 use std::collections::HashMap;
-
-#[macro_use]
-extern crate lazy_static;
+use debug_print::debug_println as debugln;
 
 // Symbols to replace: 14 136 64 109939 101010
 
@@ -106,9 +103,9 @@ fn tilt(table: &mut Vec<Vec<char>>, dir: Direction) {
                 }
             }
         }
-        for line in table.iter().as_ref() {
+        //for line in table.iter().as_ref() {
             //debugln!("{}", line.iter().collect::<String>());
-        }
+        //}
         if (0..table.len()).all(|y| {
             (0..table[y].len()).all(|x| {
                 if table[y][x] == 'O' {

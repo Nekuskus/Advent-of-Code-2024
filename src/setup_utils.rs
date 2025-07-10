@@ -27,3 +27,12 @@ pub fn pad_lines(lines: &Vec<String>) -> Vec<String> {
     new_vec.insert(len!(new_vec), ".".repeat(new_vec[0].len()));
     return new_vec;
 }
+
+// Too many problems required this one to not extract it
+#[derive(Debug, PartialEq, Eq, Hash, Clone, Copy)]
+pub enum Direction {
+    North,
+    South,
+    West,
+    East,
+}
