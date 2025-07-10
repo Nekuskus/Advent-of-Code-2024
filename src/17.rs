@@ -112,6 +112,8 @@ fn neighbours(grid: &Vec<Vec<i32>>, x: usize, y: usize, dir: Direction, counter:
 fn part1(lines: &Vec<String>) -> i32 {
     use Direction::*;
     let tiles = lines.len() * lines[0].len()  * 4; // because 4 directions
+    let mut tiles_visited = 1; // counting (0, 0) here
+
     let charmap: Vec<Vec<i32>> = lines.iter().map(|s| s.chars().map(|c| c.to_string().parse::<i32>().unwrap()).collect()).collect();
     let mut came_from: HashMap<(usize, usize, Direction, u8), (usize, usize, Direction, u8)> = HashMap::new();
     let mut cost_so_far: HashMap<(usize, usize, Direction, u8), i32> = HashMap::new();
@@ -126,6 +128,7 @@ fn part1(lines: &Vec<String>) -> i32 {
     // Priority within queue is treated as current cost
 
     while let Some(((x, y, dir, counter), cost)) = frontier.dequeue_with_cost() {
+        tiles_visited += 1;
         if (x, y) == goal {
             found_cost = cost;
             last = (x, y, dir, counter);
@@ -155,12 +158,14 @@ fn part1(lines: &Vec<String>) -> i32 {
         //debug!("{cur:?}")
     }
 
-    for line in printable {
-        for c in line {
-            debug!("{}", if c != -1 { c.to_string() } else { "#".to_string() })
-        }
-        debugln!()
-    }
+    // for line in printable {
+    //     for c in line {
+    //         debug!("{}", if c != -1 { c.to_string() } else { "#".to_string() })
+    //     }
+    //     debugln!()
+    // }
+
+    debugln!("Tiles visited: {}/{} ({}x{} grid)", tiles_visited, tiles, lines[0].len(), lines.len());
 
     return found_cost;
 }
@@ -210,6 +215,8 @@ fn neighbours_part2(grid: &Vec<Vec<i32>>, x: usize, y: usize, dir: Direction, co
 fn part2(lines: &Vec<String>) -> i32 {
     use Direction::*;
     let tiles = lines.len() * lines[0].len()  * 4; // because 4 directions
+    let mut tiles_visited = 1; // counting (0, 0) here
+
     let charmap: Vec<Vec<i32>> = lines.iter().map(|s| s.chars().map(|c| c.to_string().parse::<i32>().unwrap()).collect()).collect();
     let mut came_from: HashMap<(usize, usize, Direction, u8), (usize, usize, Direction, u8)> = HashMap::new();
     let mut cost_so_far: HashMap<(usize, usize, Direction, u8), i32> = HashMap::new();
@@ -226,6 +233,7 @@ fn part2(lines: &Vec<String>) -> i32 {
     // Priority within queue is treated as current cost
 
     while let Some(((x, y, dir, counter), cost)) = frontier.dequeue_with_cost() {
+        tiles_visited += 1;
         if (x, y) == goal && counter >= 4 {
             found_cost = cost;
             last = (x, y, dir, counter);
@@ -255,12 +263,14 @@ fn part2(lines: &Vec<String>) -> i32 {
         //debug!("{cur:?}")
     }
 
-    for line in printable {
-        for c in line {
-            debug!("{}", if c != -1 { c.to_string() } else { "#".to_string() })
-        }
-        debugln!()
-    }
+    // for line in printable {
+    //     for c in line {
+    //         debug!("{}", if c != -1 { c.to_string() } else { "#".to_string() })
+    //     }
+    //     debugln!()
+    // }
+
+    debugln!("Tiles visited: {}/{} ({}x{} grid)", tiles_visited, tiles, lines[0].len(), lines.len());
 
     return found_cost;
 }
