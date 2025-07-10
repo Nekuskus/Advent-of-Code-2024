@@ -52,7 +52,7 @@ fn main() {
     println!("{}", part1(&linesfull));
     println!("{}\n", part2(&linesfull));
     
-    println!("02-1-example.txt");
+    println!("02-example.txt");
     println!("{}", part1(&lines1and2));
     println!("{}\n", part2(&lines1and2));
 }

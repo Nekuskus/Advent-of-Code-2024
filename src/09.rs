@@ -1,7 +1,7 @@
 use setup_utils::*;
 use std::path::Path;
 
-// Symbols to replace: 09 114 2 2043183816 SOLVE2
+// Symbols to replace: 09 114 2 2043183816 1118
 
 
 #[cfg(test)]
@@ -35,20 +35,14 @@ mod tests {
     fn full() -> Result<(), String> {
         let lines = read_lines(Path::new("./inputs/09-full.txt"));
         let result1 = crate::part1(&lines);
-        //let result2 = crate::part2(&lines);
-        
-        if result1 == 2043183816 {
-            Ok(())
-        } else {
-            Err(format!("09: Bad result for Part 1, expected 2043183816 got {}", result1))
-        }
-        /*
+        let result2 = crate::part2(&lines);
+
         match (result1, result2) {
-            (2043183816, SOLVE2) => Ok(()),
-            (_, SOLVE2) => Err(format!("09: Bad result for Part 1, expected 2043183816 got {}", result1)),
-            (2043183816, _) => Err(format!("09: Bad result for Part 2, expected SOLVE2 got {}", result2)),
-            (_, _) => Err(format!("09: Bad result for Part 1 & 2, expected (2043183816, SOLVE2) got ({}, {})", result1, result2))
-        }*/
+            (2043183816, 1118) => Ok(()),
+            (_, 1118) => Err(format!("09: Bad result for Part 1, expected 2043183816 got {}", result1)),
+            (2043183816, _) => Err(format!("09: Bad result for Part 2, expected 1118 got {}", result2)),
+            (_, _) => Err(format!("09: Bad result for Part 1 & 2, expected (2043183816, 1118) got ({}, {})", result1, result2))
+        }
     }
 }
 
@@ -68,7 +62,7 @@ fn main() {
 
 
 fn evaluate_history(nums: Vec<i32>) -> i32 {
-    println!("{nums:?}");
+    //println!("{nums:?}");
     if nums.iter().all(|n| n == &0) {
         return 0;
     }

@@ -1,52 +1,41 @@
 use setup_utils::*;
-use std::ops::{Add, Range, Sub};
 use std::path::Path;
 use std::thread;
 
 // Symbols to replace: 05 35 46 278755257 26829166
 
-#[derive(Clone)]
-struct RangeMap<T> {
-    from: Range<T>,
-    to: Range<T>,
+#[derive(Clone, Debug)]
+struct RangeMap {
+    from_start: u64,
+    to_start: u64,
+    length: u64
 }
 
 #[allow(dead_code)]
-impl<
-        T: Sized + Copy + Clone + PartialOrd + std::fmt::Display + Add<Output = T> + Sub<Output = T>,
-    > RangeMap<T>
+impl RangeMap
 {
-    pub fn new(from_range: Range<T>, to_range: Range<T>) -> RangeMap<T> {
-        return RangeMap::<T> {
-            from: from_range,
-            to: to_range,
+    pub fn new(from_start: u64, to_start: u64, length: u64) -> RangeMap {
+        return RangeMap {
+            from_start: from_start,
+            to_start: to_start,
+            length: length
         };
     }
 
-    pub fn from_single(from_range: Range<T>) -> RangeMap<T> {
-        // somewhat unnecessary
-        return RangeMap::new(from_range.clone(), from_range);
+    #[inline(always)]
+    pub fn contains_from(&self, value: &u64) -> bool {
+        self.from_start <= *value && *value < self.from_start + self.length + 1
     }
 
     #[inline(always)]
-    pub fn contains_from(&self, value: &T) -> bool {
-        return self.from.contains(value);
-    }
-
-    #[inline(always)]
-    pub fn contains_to(&self, value: &T) -> bool {
-        return self.to.contains(value);
+    pub fn contains_to(&self, value: &u64) -> bool {
+        self.to_start <= *value && *value < self.to_start + self.length + 1
     }
     
     #[inline(always)]
-    pub fn map(&self, value: &T) -> T {
-        if !self.contains_from(value) {
-            panic!(
-                "Value {value} not in {}..{}!",
-                self.from.start, self.from.end
-            );
-        }
-        return self.to.start + *value - self.from.start;
+    pub fn map(&self, value: &u64) -> u64 {
+        assert!(self.contains_from(value));
+        *value + self.to_start - self.from_start
     }
 }
 
@@ -109,12 +98,17 @@ mod tests {
 fn main() {
     let linesfull = read_lines(Path::new("./inputs/05-full.txt"));
     let lines = read_lines(Path::new("./inputs/05-example.txt"));
+    
+    let map = RangeMap::new(0, 4, 4);
+    let arr = vec![0, 1, 2, 3];
+    println!("{arr:?}: {:?}", arr.iter().map(|n| map.map(n)).collect::<Vec<_>>());
+    
 
     println!("05-full.txt");
     println!("{}", part1(&linesfull));
     println!("{}\n", part2(&linesfull));
 
-    println!("05-1-example.txt");
+    println!("05-example.txt");
     println!("{}", part1(&lines));
     println!("{}\n", part2(&lines));
 }
@@ -134,7 +128,7 @@ fn part1(lines: &Vec<String>) -> u64 {
         .split(|s| s == "")
         .map(|s| s.to_vec())
         .collect::<Vec<Vec<String>>>();
-    let mut mappings: Vec<Vec<RangeMap<u64>>> = Vec::new();
+    let mut mappings: Vec<Vec<RangeMap>> = Vec::new();
     //println!("{maps:#?}");
     for map in maps {
         let _header = &map[0];
@@ -145,10 +139,10 @@ fn part1(lines: &Vec<String>) -> u64 {
                 let dest_range_start = split[0].parse::<u64>().unwrap();
                 let source_range_start = split[1].parse::<u64>().unwrap();
                 let range_len = split[2].parse::<u64>().unwrap();
-                //println!("{split:?}: {}..{}, {}..{}", source_range_start, source_range_start+range_len, dest_range_start, dest_range_start+range_len);
+                println!("{split:?}: {}..{}, {}..{}", source_range_start, source_range_start+range_len, dest_range_start, dest_range_start+range_len);
                 RangeMap::new(
-                    source_range_start..source_range_start + range_len + 1,
-                    dest_range_start..dest_range_start + range_len + 1,
+                    source_range_start, dest_range_start,
+                    range_len
                 )
             })
             .collect::<Vec<_>>();
@@ -215,7 +209,7 @@ fn part2(lines: &Vec<String>) -> u64 {
                 let source_range_start = split[1].parse::<u64>().unwrap();
                 let range_len = split[2].parse::<u64>().unwrap();
                 //println!("{split:?}: {}..{}, {}..{}", source_range_start, source_range_start+range_len, dest_range_start, dest_range_start+range_len);
-                vec![dest_range_start, source_range_start, range_len]
+                RangeMap::new(source_range_start, dest_range_start, range_len)
             })
             .collect::<Vec<_>>();
         mappings.push(mapset);
@@ -225,7 +219,7 @@ fn part2(lines: &Vec<String>) -> u64 {
         let join_vec = seed_ranges
             .map(|seed_range| {
                 s.spawn(|| {
-                    let mut num_of_iters: i128 = 0;
+                    let mut num_of_iters: u64 = 0;
                     return (seed_range
                         .map(|seed| {
                             let mut current_val = seed.clone();
@@ -233,11 +227,7 @@ fn part2(lines: &Vec<String>) -> u64 {
                             for mapset in &mappings {
                                 let mut found = false;
                                 let mut mapped: u64 = 0;
-                                for rangearr in mapset {
-                                    let rangemap = RangeMap::new(
-                                        rangearr[1]..rangearr[1] + rangearr[2] + 1,
-                                        rangearr[0]..rangearr[0] + rangearr[2] + 1,
-                                    );
+                                for rangemap in mapset {
                                     if rangemap.contains_from(&current_val) {
                                         mapped = rangemap.map(&current_val);
                                         found = true;

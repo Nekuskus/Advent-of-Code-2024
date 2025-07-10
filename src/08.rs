@@ -1,7 +1,7 @@
 use setup_utils::*;
 use std::{path::Path, collections::HashMap};
 
-// Symbols to replace: 08 6 6 17621 SOLVE2
+// Symbols to replace: 08 6 6 17621 20685524831999
 
 
 #[cfg(test)]
@@ -19,7 +19,7 @@ mod tests {
             Err(format!("08: Bad result for Part 1 example, expected 6 got {}", result))
         }
     }
-    /*
+    
     #[test]
     fn part2() -> Result<(), String> {
         let lines = read_lines(Path::new("./inputs/08-2-example.txt"));
@@ -30,25 +30,19 @@ mod tests {
             Err(format!("08: Bad result for Part 2 example, expected 6 got {}", result))
         }
     }
-    */
+    
     #[test]
     fn full() -> Result<(), String> {
         let lines = read_lines(Path::new("./inputs/08-full.txt"));
         let result1 = crate::part1(&lines);
-        //let result2 = crate::part2(&lines);
+        let result2 = crate::part2(&lines);
         
-        if result1 == 17621 {
-            Ok(())
-        } else {
-            Err(format!("08: Bad result for Part 1, expected 17621 got {}", result1))
-        }
-        /*
         match (result1, result2) {
-            (17621, SOLVE2) => Ok(()),
-            (_, SOLVE2) => Err(format!("08: Bad result for Part 1, expected 17621 got {}", result1)),
-            (17621, _) => Err(format!("08: Bad result for Part 2, expected SOLVE2 got {}", result2)),
-            (_, _) => Err(format!("08: Bad result for Part 1 & 2, expected (17621, SOLVE2) got ({}, {})", result1, result2))
-        }*/
+            (17621, 20685524831999) => Ok(()),
+            (_, 20685524831999) => Err(format!("08: Bad result for Part 1, expected 17621 got {}", result1)),
+            (17621, _) => Err(format!("08: Bad result for Part 2, expected 20685524831999 got {}", result2)),
+            (_, _) => Err(format!("08: Bad result for Part 1 & 2, expected (17621, 20685524831999) got ({}, {})", result1, result2))
+        }
     }
 }
 
@@ -59,16 +53,16 @@ fn main() {
 
     println!("08-full.txt");
     println!("{}", part1(&linesfull));
-    //println!("{}\n", part2(&linesfull));
+    println!("{}\n", part2(&linesfull));
     
     println!("08-1-example.txt");
     println!("{}", part1(&lines1));
-    //println!("{}\n", part2(&lines1));
+    println!("{}\n", part2(&lines1));
     
     
-    //println!("08-2-example.txt");
-    //println!("{}", part1(&lines2));
-    //println!("{}", part2(&lines2));
+    println!("08-2-example.txt");
+    println!("This example does not work for part1");
+    println!("{}", part2(&lines2));
     
 }
 
@@ -109,7 +103,27 @@ fn part1(lines: &Vec::<String>) -> i32 {
     return total_steps;
 }
 
-fn part2(lines: &Vec::<String>) -> i32 {
+fn lcm(nums: &Vec<i128>) -> i128 {
+    if len!(nums) == 1 {
+        return nums[0]
+    }
+    let a = nums[0];
+    let b = lcm(&nums[1..].to_vec());
+
+    return a * b / gcd(a, b);
+}
+
+fn gcd(mut a: i128, mut b: i128) -> i128 {
+    while a != 0 {
+        if a < b {
+            (a, b) = (b, a);
+        }
+        a %= b;
+    }
+    return b;
+}
+
+fn part2(lines: &Vec::<String>) -> i128 {
     let mut steps = lines[0].chars().cycle();
     let node_lines = lines[2..].to_vec();
     let mut nodes: HashMap<String, CamelNode> = HashMap::new();
@@ -124,8 +138,10 @@ fn part2(lines: &Vec::<String>) -> i32 {
     
     let mut total_steps = 0;
     let mut curnodes = nodes.iter().filter(|n| n.1.name.ends_with("A")).map(|n| n.1.clone()).collect::<Vec<_>>();
-    while !curnodes.iter().all(|n| n.name.ends_with("Z")) {
-        println!("{curnodes:#?}");
+    let mut cycles = [-1].repeat(len!(curnodes));
+    //println!("len: {}", len!(cycles));
+    while !cycles.iter().all(|num| num != &-1) {
+        //println!("{curnodes:#?}");
         let next_step = steps.next().unwrap();
         curnodes = curnodes.iter().map(|n| {
             let node = &match next_step {
@@ -136,7 +152,15 @@ fn part2(lines: &Vec::<String>) -> i32 {
             return node.clone();
         }).collect::<Vec<CamelNode>>();
         total_steps += 1;
+        for (idx, item) in curnodes.iter().enumerate() {
+            if item.name.ends_with("Z") && cycles[idx] == -1 {
+                cycles[idx] = total_steps;
+                //println!("Cycle {total_steps} found for index {idx}");
+            }
+        }
     }
 
-    return total_steps;
+    //println!("Exited loop");
+
+    lcm(&cycles)
 }
