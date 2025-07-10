@@ -1,9 +1,14 @@
+
 use std::cmp::Ordering;
 use std::fmt::Display;
 use std::fs::read_to_string;
 use std::path::Path;
 
 use itertools::Itertools;
+
+// Reexport macro for glob import
+extern crate macro_lib;
+pub use macro_lib::get_input;
 
 pub fn read_lines(filename: &Path) -> Vec<String> {
     read_to_string(filename)

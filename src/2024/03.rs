@@ -1,17 +1,17 @@
 use regex::Regex;
-use setup_utils::*;
+use utils::*;
 use std::path::Path;
 
 // Symbols to replace: 03 161 48 185797128 89798695
 
 #[cfg(test)]
 mod tests {
-    use setup_utils::read_lines;
+    use utils::get_input;
     use std::path::Path;
 
     #[test]
     fn part1() -> Result<(), String> {
-        let lines = read_lines(Path::new("./inputs/03-1-example.txt"));
+        let lines = get_input!("03-1-example.txt");
         let result = crate::part1(&lines);
         if result == 161 {
             Ok(())
@@ -25,7 +25,7 @@ mod tests {
 
     #[test]
     fn part2() -> Result<(), String> {
-        let lines = read_lines(Path::new("./inputs/03-2-example.txt"));
+        let lines = get_input!("03-2-example.txt");
         let result = crate::part2(&lines);
         if result == 48 {
             Ok(())
@@ -39,7 +39,7 @@ mod tests {
 
     #[test]
     fn full() -> Result<(), String> {
-        let lines = read_lines(Path::new("./inputs/03-full.txt"));
+        let lines = get_input!("03-full.txt");
         let result1 = crate::part1(&lines);
         let result2 = crate::part2(&lines);
 
@@ -62,9 +62,9 @@ mod tests {
 }
 
 fn main() {
-    let linesfull = read_lines(Path::new("./inputs/03-full.txt"));
-    let lines1 = read_lines(Path::new("./inputs/03-1-example.txt"));
-    let lines2 = read_lines(Path::new("./inputs/03-2-example.txt"));
+    let linesfull = get_input!("03-full.txt");
+    let lines1 = get_input!("03-1-example.txt");
+    let lines2 = get_input!("03-2-example.txt");
 
     println!("03-full.txt");
     println!("{}", part1(&linesfull));

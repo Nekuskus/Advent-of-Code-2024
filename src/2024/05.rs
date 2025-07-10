@@ -1,4 +1,4 @@
-use setup_utils::*;
+use utils::*;
 use std::cmp::Ordering;
 use std::{collections::HashMap, path::Path};
 
@@ -6,12 +6,12 @@ use std::{collections::HashMap, path::Path};
 
 #[cfg(test)]
 mod tests {
-    use setup_utils::read_lines;
+    use utils::get_input;
     use std::path::Path;
 
     #[test]
     fn part1() -> Result<(), String> {
-        let lines = read_lines(Path::new("./inputs/05-example.txt"));
+        let lines = get_input!("05-example.txt");
         let result = crate::part1(&lines);
         if result == 143 {
             Ok(())
@@ -25,7 +25,7 @@ mod tests {
 
     #[test]
     fn part2() -> Result<(), String> {
-        let lines = read_lines(Path::new("./inputs/05-example.txt"));
+        let lines = get_input!("05-example.txt");
         let result = crate::part2(&lines);
         if result == 123 {
             Ok(())
@@ -39,7 +39,7 @@ mod tests {
 
     #[test]
     fn full() -> Result<(), String> {
-        let lines = read_lines(Path::new("./inputs/05-full.txt"));
+        let lines = get_input!("05-full.txt");
         let result1 = crate::part1(&lines);
         let result2 = crate::part2(&lines);
 
@@ -62,8 +62,8 @@ mod tests {
 }
 
 fn main() {
-    let linesfull = read_lines(Path::new("./inputs/05-full.txt"));
-    let lines1 = read_lines(Path::new("./inputs/05-example.txt"));
+    let linesfull = get_input!("05-full.txt");
+    let lines1 = get_input!("05-example.txt");
 
     println!("05-full.txt");
     println!("{}", part1(&linesfull));

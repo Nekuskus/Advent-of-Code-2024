@@ -1,18 +1,19 @@
 #![feature(iter_map_windows)]
 
-use setup_utils::*;
+use itertools::Itertools;
+use utils::*;
 use std::{iter, path::Path};
 
 // Symbols to replace: 02 2 4 472 520
 
 #[cfg(test)]
 mod tests {
-    use setup_utils::read_lines;
+    use utils::get_input;
     use std::path::Path;
 
     #[test]
     fn part1() -> Result<(), String> {
-        let lines = read_lines(Path::new("./inputs/02-example.txt"));
+        let lines = get_input!("02-example.txt");
         let result = crate::part1(&lines);
         if result == 2 {
             Ok(())
@@ -26,7 +27,7 @@ mod tests {
 
     #[test]
     fn part2() -> Result<(), String> {
-        let lines = read_lines(Path::new("./inputs/02-example.txt"));
+        let lines = get_input!("02-example.txt");
         let result = crate::part2(&lines);
         if result == 4 {
             Ok(())
@@ -40,7 +41,7 @@ mod tests {
 
     #[test]
     fn full() -> Result<(), String> {
-        let lines = read_lines(Path::new("./inputs/02-full.txt"));
+        let lines = get_input!("02-full.txt");
         let result1 = crate::part1(&lines);
         let result2 = crate::part2(&lines);
 
@@ -63,8 +64,8 @@ mod tests {
 }
 
 fn main() {
-    let linesfull = read_lines(Path::new("./inputs/02-full.txt"));
-    let lines1 = read_lines(Path::new("./inputs/02-example.txt"));
+    let linesfull = get_input!("02-full.txt");
+    let lines1 = get_input!("02-example.txt");
 
     println!("02-full.txt");
     println!("{}", part1(&linesfull));
@@ -76,10 +77,10 @@ fn main() {
 }
 
 fn validate_report<T: Iterator<Item = i32> + Clone>(it: &T) -> bool {
-    let inc = it.clone().map_windows(|&[x, y]| y - x);
+    let inc = it.clone().map_windows(|&[x, y]| y - x).collect_vec();
 
-    (inc.clone().all(|x| x > 0) || inc.clone().all(|x| x < 0))
-        && inc.clone().all(|x| x.abs() >= 1 && x.abs() <= 3)
+    (inc.iter().all(|&x| x > 0) || inc.iter().all(|&x| x < 0))
+        && inc.iter().all(|x| x.abs() >= 1 && x.abs() <= 3)
 }
 
 fn part1(lines: &Vec<String>) -> usize {
